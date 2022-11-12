@@ -19,15 +19,15 @@ def greeting():
 
 @app.route('/EmailService/email')
 def getAllEmail():
-    return EmailHandler().getAllParts()
+    return EmailHandler().getAllEmails()
 
-@app.route('/EmailService/inbox/<int:pid>')
-def getInbox(pid):
-    return EmailHandler().getInbox(pid)
+@app.route('/EmailService/inbox/<int:uid>')
+def getInbox(uid):
+    return EmailHandler().getInbox(uid)
 
-@app.route('/EmailService/outbox/<int:pid>')
-def getOutbox(pid):
-    return EmailHandler().getOutbox(pid)
+@app.route('/EmailService/outbox/<int:uid>')
+def getOutbox(uid):
+    return EmailHandler().getOutbox(uid)
 
 @app.route('/EmailService/users')
 def getAllUsers():

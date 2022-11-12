@@ -18,7 +18,7 @@ class EmailHandler:
         email_list = dao.getAllEmails()
         result_list = []
         for row in email_list:
-            result = self.build_part_dict(row)
+            result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Emails=result_list)
 
@@ -27,7 +27,7 @@ class EmailHandler:
         inbox = dao.getInbox(ID)
         result_list = []
         for row in inbox:
-            result = self.build_part_dict(row)
+            result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Emails=result_list)
 

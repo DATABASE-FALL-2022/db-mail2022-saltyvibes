@@ -7,7 +7,7 @@ class EmailDAO:
 
     def getAllEmails(self):
         cursor = self.conn.cursor()
-        query = "select * from emails;"
+        query = "select * from email;"
         cursor.execute(query)
         result = []
         for row in cursor:
