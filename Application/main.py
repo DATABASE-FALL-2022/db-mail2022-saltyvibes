@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 
 from handler.email import EmailHandler
 from handler.users import UserHandler
+from handler.debug import DebugHandler
 
 # Activate
 app = Flask(__name__)
@@ -20,6 +21,11 @@ def greeting():
 @app.route('/EmailService/email')
 def getAllEmail():
     return EmailHandler().getAllEmails()
+
+@app.route('/EmailService/User/fillwithdummy')
+def FillWithDummyData():
+    return DebugHandler().fill()
+
 
 @app.route('/EmailService/inbox/<int:uid>')
 def getInbox(uid):
