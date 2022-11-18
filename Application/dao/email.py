@@ -25,3 +25,20 @@ class EmailDAO:
             result.append(row)
         return result
 
+    def getEmailWithMostRecipients(self):
+        cursor = self.conn.cursor()
+        query = "with most_recipients as (select R.email_id from receives as R group by R.email_id having count(email_id) =(select count(email_id) as count from receives group by email_id order by count desc limit 1 )) select E.email_id,E.date_created,E.subject,E.body from \"Email\" as E,most_recipients as mr where E.email_id = mr.email_id;"
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
+    def getEmailWithMostReplies(self):
+        cursor = self.conn.cursor()
+        query = "with most_replies as (select R.original_id from reply as R group by R.original_id having count(R.original_id) = (select count(original_id) as count from reply group by original_id order by count desc limit 1)) select E.email_id,E.date_created,E.subject,E.body from \"Email\" as E,most_replies as mr where E.email_id = mr.original_id;"
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result

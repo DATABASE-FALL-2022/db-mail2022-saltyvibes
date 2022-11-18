@@ -12,6 +12,14 @@ class EmailHandler:
         result['body'] = row[4]
         return result
 
+    def build_email_dict_nousr(self, row):
+        result = {}
+        result['email_ID'] = row[0]
+        result['date_created'] = row[1]
+        result['subject'] = row[2]
+        result['body'] = row[3]
+        return result
+
 
 
 
@@ -32,6 +40,31 @@ class EmailHandler:
             result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Emails=result_list)
+
+    def getEmailWithMostRecipients(self):
+        dao = EmailDAO()
+        email = dao.getEmailWithMostRecipients()
+        result_list = []
+        for row in email:
+            result = self.build_email_dict_nousr(row)
+            result_list.append(result)
+        if len(result_list) > 1:
+            return jsonify(Email_With_Most_Recipients_Tied=result_list)
+        else:
+            return jsonify(Email_With_Most_Recipients=result_list)
+
+    def getEmailWithMostReplies(self):
+        dao = EmailDAO()
+        email = dao.getEmailWithMostReplies()
+        result_list = []
+        for row in email:
+            result = self.build_email_dict_nousr(row)
+            result_list.append(result)
+        if len(result_list)>1:
+            return jsonify(Email_With_Most_Replies_Tied=result_list)
+        else:
+            return jsonify(Email_With_Most_Replies=result_list)
+
 
 
 

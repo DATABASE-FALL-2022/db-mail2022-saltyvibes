@@ -35,6 +35,14 @@ def getInbox(user_id):
 def getOutbox(user_id):
     return EmailHandler().getOutbox(user_id)
 
+@app.route('/EmailService/EmailWithMostRecipients')
+def getEmailWithMostRecipients():
+    return EmailHandler().getEmailWithMostRecipients()
+
+@app.route('/EmailService/EmailWithMostReplies')
+def getEmailWithMostReplies():
+    return EmailHandler().getEmailWithMostReplies()
+
 @app.route('/EmailService/users')
 def getAllUsers():
     return UserHandler().getAllUsers()
