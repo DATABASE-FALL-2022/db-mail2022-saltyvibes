@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
 from handler.email import EmailHandler
-from handler.users import UserHandler
+from handler.user import UserHandler
 from handler.debug import DebugHandler
 
 # Activate
@@ -42,6 +42,15 @@ def getEmailWithMostRecipients():
 @app.route('/EmailService/EmailWithMostReplies')
 def getEmailWithMostReplies():
     return EmailHandler().getEmailWithMostReplies()
+
+@app.route('/EmailService/Top10UsersWithMoreEmailsInInbox')
+def getTop10UsersInbox():
+    return UserHandler().getTop10UsersInbox()
+
+@app.route('/EmailService/Top10UsersWithMoreEmailsInOutbox')
+def getTop10UsersOutbox():
+    return UserHandler().getTop10UsersOutbox()
+
 
 @app.route('/EmailService/users')
 def getAllUsers():

@@ -30,7 +30,7 @@ class EmailHandler:
         for row in inbox:
             result = self.build_email_dict(row)
             result_list.append(result)
-        return jsonify(Emails=result_list)
+        return jsonify(Inbox=result_list)
 
     def getOutbox(self,ID):
         dao = EmailDAO()
@@ -39,7 +39,7 @@ class EmailHandler:
         for row in Outbox:
             result = self.build_email_dict(row)
             result_list.append(result)
-        return jsonify(Emails=result_list)
+        return jsonify(Outbox=result_list)
 
     def getEmailWithMostRecipients(self):
         dao = EmailDAO()
