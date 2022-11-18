@@ -1,27 +1,29 @@
 from config.dbconfig import pg_config
 import psycopg2
-class EmailDAO:
+class ReplyDAO:
     def __init__(self):
         connection_url = "host=%s dbname=%s user=%s password=%s" % (pg_config['host'],pg_config['dbname'],pg_config['user'],pg_config['passwd'])
         self.conn = psycopg2._connect(connection_url)
 
+    def getAllReply(self,email_id):
 
-
-    def getInbox(self,ID):
         cursor = self.conn.cursor()
-        query =  "select E.user_id,E.email_id,E.date_created,E.subject,E.body from receives as R,\"Email\" as E where E.email_id = R.email_id and R.user_id = %s;"
-        cursor.execute(query,(ID,))
+        query = "select reply_id from reply where original_id = %s;"
+        cursor.execute(query,(email_id,))
         result = []
         for row in cursor:
             result.append(row)
         return result
 
-    def getOutbox(self,ID):
+    def isReply(self,email_id):
         cursor = self.conn.cursor()
-        query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s;"
-        cursor.execute(query,(ID,))
+        query = "select count(original_id) from reply where reply_id = %s;"
+        cursor.execute(query, (email_id,))
         result = []
         for row in cursor:
             result.append(row)
+        if result[0]>1:
+            print("it is a reply")
+        else:
+            print("it is not a reply")
         return result
-

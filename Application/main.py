@@ -27,13 +27,13 @@ def FillWithDummyData():
     return DebugHandler().fill()
 
 
-@app.route('/EmailService/inbox/<int:uid>')
-def getInbox(uid):
-    return EmailHandler().getInbox(uid)
+@app.route('/EmailService/inbox/<int:user_id>')
+def getInbox(user_id):
+    return EmailHandler().getInbox(user_id)
 
-@app.route('/EmailService/outbox/<int:uid>')
-def getOutbox(uid):
-    return EmailHandler().getOutbox(uid)
+@app.route('/EmailService/outbox/<int:user_id>')
+def getOutbox(user_id):
+    return EmailHandler().getOutbox(user_id)
 
 @app.route('/EmailService/users')
 def getAllUsers():
