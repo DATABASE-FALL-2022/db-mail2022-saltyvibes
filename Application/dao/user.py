@@ -41,14 +41,7 @@ class UserDAO:
             result.append(row)
         return result
 
-    def getEmailByUser(self, user_id):
-        cursor = self.conn.cursor()
-        query = "Select email_address from User where user_id = %s returning email_address;"
-        cursor.execute(query, (user_id,))
-        result = cursor.fetchone()
-        return result
-
-    def getUserByEmail(self, email_address):
+    def getUserInfoByEmail(self, email_address):
         cursor = self.conn.cursor()
         query = "Select * from User where email_address = %s;"
         cursor.execute(query, (email_address,))
