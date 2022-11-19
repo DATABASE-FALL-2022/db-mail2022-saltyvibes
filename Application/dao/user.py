@@ -36,6 +36,12 @@ class UserDAO:
         cursor.execute(query,(name,email_address,password,is_premium,phone,date_of_birth,user_id))
         self.conn.commit()
         return user_id
+    def delete(self,user_id):
+        cursor = self.conn.cursor()
+        query = 'DELETE from "User" where user_id = %s'
+        cursor.execute(query, (user_id,))
+        self.conn.commit()
+        return user_id
     def getUserbyId(self,user_id):
         cursor = self.conn.cursor()
         query = 'SELECT "name", email_address, "password", is_premium, phone,date_of_birth FROM "User" where user_id = %s'

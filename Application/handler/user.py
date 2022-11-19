@@ -73,7 +73,13 @@ class UserHandler:
                 else:
                     return jsonify(Error="Unexpected attributes in update request"),400
 
-
+    def deleteUser(self,user_id):
+        dao = UserDAO()
+        if not dao.getUserbyId(user_id):
+            return jsonify(Error="User not found")
+        else:
+            dao.delete(user_id)
+            return jsonify(DeleteStatus="OK"),200
     def InsertUser(self,form):
         if len(form) != 4:
             return jsonify(Error="Malformed post request"), 400
