@@ -7,7 +7,7 @@ class UserDAO:
 
     def getAllUsers(self):
         cursor = self.conn.cursor()
-        query = "Select * from User;"
+        query = 'Select * from "User"'
         cursor.execute(query)
         result = []
         for row in cursor:
@@ -22,6 +22,15 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
+
+    def insert(self,name,email_address,password,is_premium,phone,date_of_birth):
+        cursor = self.conn.cursor()
+        query = 'insert into "User"("name", email_address, "password", is_premium, phone, date_of_birth) values (%s,%s,%s,%s,%s,%s) returning user_id;'
+        cursor.execute(query, (name,email_address,password,is_premium,phone,date_of_birth,))
+        user_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return user_id
+
 
     def getTop10UsersOutbox(self):
         cursor = self.conn.cursor()

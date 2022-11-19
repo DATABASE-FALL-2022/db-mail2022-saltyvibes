@@ -22,7 +22,8 @@ class EmailHandler:
 
 
 
-
+    def InsertEmail(self,form):
+        pass
     def getInbox(self,ID):
         dao = EmailDAO()
         inbox = dao.getInbox(ID)

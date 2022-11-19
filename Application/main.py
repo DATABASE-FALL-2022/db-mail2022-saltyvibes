@@ -18,9 +18,12 @@ CORS(app)
 def greeting():
     return 'Hello, this is the parts DB App!'
 
-@app.route('/EmailService/email')
+@app.route('/EmailService/email', methods = ['POST',"GET"])
 def getAllEmail():
-    return EmailHandler().getAllEmails()
+    if request.method == 'POST':
+        return EmailHandler().InsertEmail(request.json)
+    else:
+        return EmailHandler().getAllEmails()
 
 @app.route('/EmailService/User/fillwithdummy')
 def FillWithDummyData():
@@ -52,9 +55,12 @@ def getTop10UsersOutbox():
     return UserHandler().getTop10UsersOutbox()
 
 
-@app.route('/EmailService/users')
+@app.route('/EmailService/users', methods=['GET','POST'])
 def getAllUsers():
-    return UserHandler().getAllUsers()
+    if request.method == 'POST':
+        return UserHandler().InsertUser(request.json)
+    else:
+        return UserHandler().getAllUsers()
 
 
 
