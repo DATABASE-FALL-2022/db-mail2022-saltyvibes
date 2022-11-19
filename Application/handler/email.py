@@ -5,7 +5,8 @@ from dao.email import EmailDAO
 class EmailHandler:
     def build_email_dict(self, row):
         result = {}
-        result['user_id'] = row[0]
+        print(row)
+        result['user_id'] = row[3]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
         result['subject'] = row[3]
@@ -20,13 +21,14 @@ class EmailHandler:
         result['body'] = row[3]
         return result
 
-    def build_email_attributes(self, email_id, date_created, subject, body, user_id):
+    def build_email_attributes(self, email_id, date_created, subject, body, user_id,is_deleted):
         result = {}
         result["email_id"] = email_id
         result["date_created"] = date_created
         result["subject"] = subject
         result["body"] = body
         result["user_id"] = user_id
+        result["is_deleted"] = is_deleted
         return result
 
     def getAllEmails(self):
@@ -37,7 +39,25 @@ class EmailHandler:
             result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Email=result_list)
-
+    def updateEmail(self,email_id,form):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(email_id):
+            return jsonify(Error="Email not found"), 404
+        else:
+            if len(form) != 5:
+                return jsonify(Error="Malformed update request"), 400
+            else:
+                date_created = form["date_created"]
+                subject = form["subject"]
+                body = form["body"]
+                user_id = form["user_id"]
+                is_deleted = form["is_deleted"]
+                if date_created and subject and body and user_id and is_deleted:
+                    dao.update(email_id,date_created,subject,body,user_id,is_deleted)
+                    result = self.build_email_attributes(email_id,date_created,subject,body,user_id,is_deleted)
+                    return jsonify(Email=result), 200
+                else:
+                    return jsonify(Error="Unexpected attributes in update request"), 400
     def InsertEmail(self, form):
         if len(form) != 4:
             return jsonify(Error="Malformed post request"), 400
@@ -46,20 +66,30 @@ class EmailHandler:
             subject = form["subject"]
             body = form["body"]
             user_id = form["user_id"]
-            if date_created and subject and body and user_id:
+            is_deleted = form["is_deleted"]
+            if date_created and subject and body and user_id and is_deleted:
                 dao = EmailDAO()
                 email_id = dao.insert(date_created, subject, body, user_id)
-                result = self.build_email_attributes(email_id, date_created, subject, body, user_id)
+                result = self.build_email_attributes(email_id, date_created, subject, body, user_id,is_deleted)
                 return jsonify(Email=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
+    def build_get_email_attributes(self,email_id,row):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = row[0]
+        result["subject"] = row[1]
+        result["body"] = row[2]
+        result["user_id"] = row[3]
+        result["is_deleted"] = row[4]
+        return result
     def getEmailbyId(self,email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
         if not row:
             return jsonify(Error="Email Not Found"), 404
         else:
-            email = self.build_email_dict(row)
+            email = self.build_get_email_attributes(email_id,row)
             return jsonify(Email=email)
 
     def getInbox(self, ID):

@@ -14,6 +14,7 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def getEmailbyId(self,email_id):
         cursor = self.conn.cursor()
         query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
@@ -21,10 +22,17 @@ class EmailDAO:
         result = cursor.fetchone()
         return result
 
-    def insert(self,date_created,subject,body,user_id):
+    def update(self,email_id,date_created,subject,body,user_id,is_deleted):
         cursor = self.conn.cursor()
-        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s) returning email_id;'
-        cursor.execute(query, (date_created, subject, body, user_id,))
+        query = 'UPDATE "Email" SET date_created = %s, subject = %s, body = %s, is_deleted = %s, user_id = %s WHERE email_id = %s'
+        cursor.execute(query,(date_created,subject,body,is_deleted,user_id,email_id,))
+        self.conn.commit()
+        return email_id
+
+    def insert(self,date_created,subject,body,user_id,is_deleted):
+        cursor = self.conn.cursor()
+        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s,%s) returning email_id;'
+        cursor.execute(query, (date_created, subject, body, user_id,is_deleted,))
         email_id = cursor.fetchone()[0]
         self.conn.commit()
         return email_id

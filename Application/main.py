@@ -30,7 +30,7 @@ def getEmailbyId(email_id):
     if request.method == "GET":
         return EmailHandler().getEmailbyId(email_id)
     elif request.method == "PUT":
-        pass
+        return EmailHandler().updateEmail(email_id,request.json)
     elif request.method == "DELETE":
         pass
     else:
