@@ -25,6 +25,18 @@ def getAllEmail():
     else:
         return EmailHandler().getAllEmails()
 
+@app.route('/EmailService/email/<int:email_id>', methods=['GET', 'PUT', 'DELETE'])
+def getEmailbyId(email_id):
+    if request.method == "GET":
+        return EmailHandler().getEmailbyId(email_id)
+    elif request.method == "PUT":
+        pass
+    elif request.method == "DELETE":
+        pass
+    else:
+        return jsonify(Error = "Method not allowed"), 405
+
+
 @app.route('/EmailService/User/fillwithdummy')
 def FillWithDummyData():
     return DebugHandler().fill()
@@ -53,6 +65,7 @@ def getTop10UsersInbox():
 @app.route('/EmailService/Top10UsersWithMoreEmailsInOutbox')
 def getTop10UsersOutbox():
     return UserHandler().getTop10UsersOutbox()
+
 
 
 @app.route('/EmailService/users', methods=['GET','POST'])

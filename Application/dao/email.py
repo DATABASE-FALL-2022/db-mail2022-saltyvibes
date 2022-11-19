@@ -14,6 +14,13 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+    def getEmailbyId(self,email_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
+        cursor.execute(query,(email_id,))
+        result = cursor.fetchone()
+        return result
+
     def insert(self,date_created,subject,body,user_id):
         cursor = self.conn.cursor()
         query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s) returning email_id;'

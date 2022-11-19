@@ -53,6 +53,14 @@ class EmailHandler:
                 return jsonify(Email=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
+    def getEmailbyId(self,email_id):
+        dao = EmailDAO()
+        row = dao.getEmailbyId(email_id)
+        if not row:
+            return jsonify(Error="Email Not Found"), 404
+        else:
+            email = self.build_email_dict(row)
+            return jsonify(Email=email)
 
     def getInbox(self, ID):
         dao = EmailDAO()
