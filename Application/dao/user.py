@@ -40,3 +40,34 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
+
+    def getEmailByUser(self, user_id):
+        cursor = self.conn.cursor()
+        query = "Select email_address from User where user_id = %s returning email_address;"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchone()
+        return result
+
+    def getUserByEmail(self, email_address):
+        cursor = self.conn.cursor()
+        query = "Select * from User where email_address = %s;"
+        cursor.execute(query, (email_address,))
+        result = cursor.fetchone()
+        return result
+
+    def addFriend(self, owner_id, friend_id):
+        cursor = self.conn.cursor()
+        query = "insert into Friends(owner_id, friend_id) values (%s, %s) returning owner_id and friend_id;"
+        cursor.execute(query, (owner_id, friend_id,))
+        owner_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return owner_id
+
+    def removeFriend(self, owner_id, friend_id):
+        cursor = self.conn.cursor()
+        query = "delete from Friends where owner_id = %s and friend_id = %s " \
+                                    "or friend_id = %s and owner_id = %s " \
+                                    "returning owner_id;"
+        cursor.execute(query, (owner_id, friend_id,))
+        self.conn.commit()
+        return owner_id
