@@ -24,7 +24,7 @@ class EmailDAO:
 
     def getInbox(self,ID):
         cursor = self.conn.cursor()
-        query =  "select E.user_id,E.email_id,E.date_created,E.subject,E.body from receives as R,\"Email\" as E where E.email_id = R.email_id and R.user_id = %s;"
+        query =  "select E.user_id,E.email_id,E.date_created,E.subject,E.body from receives as R,\"Email\" as E where E.email_id = R.email_id and R.user_id = %s and R.is_deleted!=1;"
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
@@ -33,7 +33,7 @@ class EmailDAO:
 
     def getOutbox(self,ID):
         cursor = self.conn.cursor()
-        query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s;"
+        query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s and is_deleted !=1;"
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:

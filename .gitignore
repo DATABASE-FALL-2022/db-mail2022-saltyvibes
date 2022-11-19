@@ -5,3 +5,11 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+Application/.idea/workspace.xml
+Application/config/__pycache__/__init__.cpython-311.pyc
+Application/config/__pycache__/dbconfig.cpython-311.pyc
+Application/dao/__pycache__/__init__.cpython-311.pyc
+Application/dao/__pycache__/debug.cpython-311.pyc
+Application/dao/__pycache__/email.cpython-311.pyc
+Application/dao/__pycache__/user.cpython-311.pyc
+*.pyc
