@@ -74,7 +74,17 @@ def getAllUsers():
         return UserHandler().InsertUser(request.json)
     else:
         return UserHandler().getAllUsers()
+@app.route('/EmailService/users/<int:user_id>', methods=['GET','PUT',"DELETE"])
+def getUserByID(user_id):
 
+    if request.method == "GET":
+        return UserHandler().getUserbyId(user_id)
+    elif request.method == "PUT":
+        return UserHandler().updateUser(user_id,request.json)
+    elif request.method == "DELETE":
+        return UserHandler().deleteUser(user_id)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
 
 
 if __name__ == '__main__':

@@ -30,7 +30,18 @@ class UserDAO:
         user_id = cursor.fetchone()[0]
         self.conn.commit()
         return user_id
-
+    def update(self,user_id,name,email_address,password,is_premium,phone,date_of_birth):
+        cursor = self.conn.cursor()
+        query = 'UPDATE "User" SET "name" = %s, email_address = %s, "password" = %s, is_premium = %s, phone = %s, date_of_birth = %s WHERE user_id = %s'
+        cursor.execute(query,(name,email_address,password,is_premium,phone,date_of_birth,user_id))
+        self.conn.commit()
+        return user_id
+    def getUserbyId(self,user_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT "name", email_address, "password", is_premium, phone,date_of_birth FROM "User" where user_id = %s'
+        cursor.execute(query,(user_id,))
+        result = cursor.fetchone()
+        return result
 
     def getTop10UsersOutbox(self):
         cursor = self.conn.cursor()

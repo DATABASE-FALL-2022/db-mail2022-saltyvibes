@@ -32,6 +32,47 @@ class UserHandler:
             result = self.build_user_dict(row)
             result_list.append(result)
         return jsonify(Users=result_list)
+    def build_get_userid_attributes(self,user_id,row):
+        result = {}
+        result['user_id'] = user_id
+        result['name'] = row[0]
+        result['email_address'] = row[1]
+        result['password'] = row[2]
+        result['is_premium'] = row[3]
+        result['phone'] = row[4]
+        result['date_of_birth'] = row[5]
+        return result
+
+    def getUserbyId(self,user_id):
+        dao = UserDAO()
+        row = dao.getUserbyId(user_id)
+        if not row:
+            return jsonify(Error="Email Not Found"), 404
+        else:
+            email = self.build_get_userid_attributes(user_id, row)
+            return jsonify(Email=email)
+
+    def updateUser(self,user_id,form):
+        dao = UserDAO()
+        if not dao.getUserbyId(user_id):
+            return jsonify(Error = "User not found"), 404
+        else:
+            if len(form) != 6:
+                return jsonify(Error = "Malformed update request"),400
+            else:
+                name = form["name"]
+                email_address = form["email_address"]
+                password = form["password"]
+                is_premium = form["is_premium"]
+                phone = form["phone"]
+                date_of_birth = form["date_of_birth"]
+                if name and email_address and password and is_premium and phone and date_of_birth:
+                    dao.update(user_id,name,email_address,password,is_premium,phone,date_of_birth)
+                    result = self.build_user_attributes(user_id,name,email_address,password,is_premium,phone,date_of_birth)
+                    return jsonify(Email=result), 200
+                else:
+                    return jsonify(Error="Unexpected attributes in update request"),400
+
 
     def InsertUser(self,form):
         if len(form) != 4:
@@ -50,6 +91,7 @@ class UserHandler:
                 return jsonify(User= result),201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
+
     def getTop10UsersInbox(self):
         dao = UserDAO()
         Users = dao.getTop10UsersInbox()
