@@ -34,7 +34,7 @@ class UserHandler:
         return jsonify(Users=result_list)
 
     def InsertUser(self,form):
-        if len(form) != 6:
+        if len(form) != 4:
             return jsonify(Error="Malformed post request"), 400
         else:
             name = form['name']

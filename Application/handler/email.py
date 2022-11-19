@@ -20,11 +20,41 @@ class EmailHandler:
         result['body'] = row[3]
         return result
 
+    def build_email_attributes(self, email_id, date_created, subject, body, user_id):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = date_created
+        result["subject"] = subject
+        result["body"] = body
+        result["user_id"] = user_id
+        return result
 
+    def getAllEmails(self):
+        dao = EmailDAO()
+        user_list = dao.getAllEmails()
+        result_list = []
+        for row in user_list:
+            result = self.build_email_dict(row)
+            result_list.append(result)
+        return jsonify(Email=result_list)
 
-    def InsertEmail(self,form):
-        pass
-    def getInbox(self,ID):
+    def InsertEmail(self, form):
+        if len(form) != 4:
+            return jsonify(Error="Malformed post request"), 400
+        else:
+            date_created = form["date_created"]
+            subject = form["subject"]
+            body = form["body"]
+            user_id = form["user_id"]
+            if date_created and subject and body and user_id:
+                dao = EmailDAO()
+                email_id = dao.insert(date_created, subject, body, user_id)
+                result = self.build_email_attributes(email_id, date_created, subject, body, user_id)
+                return jsonify(Email=result), 201
+            else:
+                return jsonify(Error="Unexpected attributes in post request"), 400
+
+    def getInbox(self, ID):
         dao = EmailDAO()
         inbox = dao.getInbox(ID)
         result_list = []
@@ -33,7 +63,7 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Inbox=result_list)
 
-    def getOutbox(self,ID):
+    def getOutbox(self, ID):
         dao = EmailDAO()
         Outbox = dao.getOutbox(ID)
         result_list = []
@@ -61,11 +91,7 @@ class EmailHandler:
         for row in email:
             result = self.build_email_dict_nousr(row)
             result_list.append(result)
-        if len(result_list)>1:
+        if len(result_list) > 1:
             return jsonify(Email_With_Most_Replies_Tied=result_list)
         else:
             return jsonify(Email_With_Most_Replies=result_list)
-
-
-
-

@@ -6,6 +6,21 @@ class EmailDAO:
         self.conn = psycopg2._connect(connection_url)
 
 
+    def getAllEmails(self):
+        cursor = self.conn.cursor()
+        query = 'Select * from "Email"'
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+    def insert(self,date_created,subject,body,user_id):
+        cursor = self.conn.cursor()
+        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s) returning email_id;'
+        cursor.execute(query, (date_created, subject, body, user_id,))
+        email_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return email_id
 
     def getInbox(self,ID):
         cursor = self.conn.cursor()
