@@ -32,7 +32,7 @@ def getEmailbyId(email_id):
     elif request.method == "PUT":
         return EmailHandler().updateEmail(email_id,request.json)
     elif request.method == "DELETE":
-        pass
+        return EmailHandler().deleteEmail(email_id)
     else:
         return jsonify(Error = "Method not allowed"), 405
 

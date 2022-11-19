@@ -39,6 +39,8 @@ class EmailHandler:
             result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Email=result_list)
+
+
     def updateEmail(self,email_id,form):
         dao = EmailDAO()
         if not dao.getEmailbyId(email_id):
@@ -58,6 +60,15 @@ class EmailHandler:
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
+
+    def deleteEmail(self,email_id):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(email_id):
+            return jsonify(Error= "Email not found"), 404
+        else:
+            dao.delete(email_id)
+            return jsonify(DeleteStatus = "OK"), 200
+
     def InsertEmail(self, form):
         if len(form) != 4:
             return jsonify(Error="Malformed post request"), 400

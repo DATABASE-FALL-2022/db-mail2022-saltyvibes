@@ -29,6 +29,13 @@ class EmailDAO:
         self.conn.commit()
         return email_id
 
+    def delete(self,email_id):
+        cursor = self.conn.cursor()
+        query = 'DELETE from "Email" where email_id = %s'
+        cursor.execute(query,(email_id,))
+        self.conn.commit()
+        return email_id
+
     def insert(self,date_created,subject,body,user_id,is_deleted):
         cursor = self.conn.cursor()
         query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s,%s) returning email_id;'
