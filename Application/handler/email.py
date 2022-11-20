@@ -6,7 +6,7 @@ class EmailHandler:
     def build_email_dict(self, row):
         result = {}
         print(row)
-        result['user_id'] = row[3]
+        result['user_id'] = row[0]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
         result['subject'] = row[3]
@@ -50,7 +50,7 @@ class EmailHandler:
         result['body'] = row[3]
         return result
 
-    def build_get_email_attributes(self,email_id,row):
+    def build_get_email_attributes(self, email_id, row):
         result = {}
         result["email_id"] = email_id
         result["date_created"] = row[0]
@@ -60,7 +60,7 @@ class EmailHandler:
         result["is_deleted"] = row[4]
         return result
 
-    def build_email_attributes(self, email_id, date_created, subject, body, user_id,is_deleted):
+    def build_email_attributes(self, email_id, date_created, subject, body, user_id, is_deleted):
         result = {}
         result["email_id"] = email_id
         result["date_created"] = date_created
@@ -70,7 +70,7 @@ class EmailHandler:
         result["is_deleted"] = is_deleted
         return result
 
-    def build_reply_attributes(self, email_id, date_created, subject, body, user_id,reply_id):
+    def build_reply_attributes(self, email_id, date_created, subject, body, user_id, reply_id):
         result = {}
         result["email_id"] = email_id
         result["date_created"] = date_created
@@ -89,8 +89,7 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Email=result_list)
 
-
-    def updateEmail(self,email_id,form):
+    def updateEmail(self, email_id, form):
         dao = EmailDAO()
         if not dao.getEmailbyId(email_id):
             return jsonify(Error="Email not found"), 404
@@ -104,19 +103,19 @@ class EmailHandler:
                 user_id = form["user_id"]
                 is_deleted = form["is_deleted"]
                 if date_created and subject and body and user_id and is_deleted:
-                    dao.update(email_id,date_created,subject,body,user_id,is_deleted)
-                    result = self.build_email_attributes(email_id,date_created,subject,body,user_id,is_deleted)
+                    dao.update(email_id, date_created, subject, body, user_id, is_deleted)
+                    result = self.build_email_attributes(email_id, date_created, subject, body, user_id, is_deleted)
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
 
-    def deleteEmail(self,email_id):
+    def deleteEmail(self, email_id):
         dao = EmailDAO()
         if not dao.getEmailbyId(email_id):
-            return jsonify(Error= "Email not found"), 404
+            return jsonify(Error="Email not found"), 404
         else:
             dao.delete(email_id)
-            return jsonify(DeleteStatus = "OK"), 200
+            return jsonify(DeleteStatus="OK"), 200
 
     def InsertEmail(self, form):
         if len(form) != 4:
@@ -130,7 +129,7 @@ class EmailHandler:
             if date_created and subject and body and user_id and is_deleted:
                 dao = EmailDAO()
                 email_id = dao.insert(date_created, subject, body, user_id)
-                result = self.build_email_attributes(email_id, date_created, subject, body, user_id,is_deleted)
+                result = self.build_email_attributes(email_id, date_created, subject, body, user_id, is_deleted)
                 return jsonify(Email=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
@@ -147,19 +146,19 @@ class EmailHandler:
             reply_id = form["reply_id"]
             if date_created and subject and body and user_id and reply_id:
                 dao = EmailDAO()
-                email_id = dao.reply(date_created, subject, body, user_id,reply_id)
-                result = self.build_reply_attributes(email_id, date_created, subject, body, user_id,reply_id)
+                email_id = dao.reply(date_created, subject, body, user_id, reply_id)
+                result = self.build_reply_attributes(email_id, date_created, subject, body, user_id, reply_id)
                 return jsonify(Reply=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
 
-    def getEmailbyId(self,email_id):
+    def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
         if not row:
             return jsonify(Error="Email Not Found"), 404
         else:
-            email = self.build_get_email_attributes(email_id,row)
+            email = self.build_get_email_attributes(email_id, row)
             return jsonify(Email=email)
 
     def getInbox(self, ID):
@@ -171,17 +170,16 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Inbox=result_list)
 
-    def getFilteredInbox(self, ID,category):
+    def getFilteredInbox(self, ID, category):
         dao = EmailDAO()
-        inbox = dao.getFilteredInbox(ID,category)
+        inbox = dao.getFilteredInbox(ID, category)
         result_list = []
         for row in inbox:
             result = self.build_inbox_dict(row)
             result_list.append(result)
         return jsonify(Inbox=result_list)
 
-
-    def getEmailWithMostRecipientsbyUser(self,user_id):
+    def getEmailWithMostRecipientsbyUser(self, user_id):
         dao = EmailDAO()
         email = dao.getEmailWithMostRecipientsbyUser(user_id)
         result_list = []
@@ -193,6 +191,18 @@ class EmailHandler:
         else:
             return jsonify(Email_With_Most_Recipients=result_list)
 
+    def getEmailWithMostRepliesbyUser(self, user_id):
+        dao = EmailDAO()
+        email = dao.getEmailWithMostRepliesbyUser(user_id)
+        result_list = []
+        for row in email:
+            result = self.build_email_dict_nousr(row)
+            result_list.append(result)
+        if len(result_list) > 1:
+            return jsonify(Email_With_Most_Replies_Tied=result_list)
+        else:
+            return jsonify(Email_With_Most_Replies=result_list)
+
     def getOutbox(self, ID):
         dao = EmailDAO()
         Outbox = dao.getOutbox(ID)
@@ -202,9 +212,9 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Outbox=result_list)
 
-    def getEmailFromUser(self, email_id,user_id):
+    def getEmailFromUser(self, email_id, user_id):
         dao = EmailDAO()
-        email_from_user = dao.getEmailFromUser(email_id,user_id)
+        email_from_user = dao.getEmailFromUser(email_id, user_id)
         result_list = []
         for row in email_from_user:
             result = self.build_email_dict(row)
@@ -243,7 +253,7 @@ class EmailHandler:
     #     self.conn.commit()
     #     return email_ID
 
-    def sendEmail(self, form): #insert into
+    def sendEmail(self, form):  # insert into
         dao = EmailDAO()
         if len(form) != 2:
             return jsonify(Error="Malformed post request"), 400
@@ -251,7 +261,7 @@ class EmailHandler:
         user_id = form["user_id"]
         if email_id and user_id:
             if dao.getEmailbyId(email_id):
-                receive = dao.sendEmail(email_id,user_id)
+                receive = dao.sendEmail(email_id, user_id)
                 result = self.build_email_dict(receive)
                 return jsonify(EmailFromUser=result)
             else:
@@ -259,7 +269,7 @@ class EmailHandler:
         else:
             return jsonify(Error="Unexpected attributes in post request"), 400
 
-    def readEmail(self, email_ID): #update
+    def readEmail(self, email_ID):  # update
         cursor = self.conn.cursor()
         query = "update receives set is_received = %s where email_ID = %s;"
         cursor.execute(query, (email_ID,))
