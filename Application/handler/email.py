@@ -28,6 +28,20 @@ class EmailHandler:
             result["is_reply"] = 0
         return result
 
+    def build_outbox_dict(self, row):
+        result = {}
+        print(row)
+        result['user_id'] = row[0]
+        result['email_ID'] = row[1]
+        result['date_created'] = row[2]
+        result['subject'] = row[3]
+        result['body'] = row[4]
+        if isinstance(row[5], int):
+            result["is_reply"] = 1
+        else:
+            result["is_reply"] = 0
+        return result
+
     def build_email_dict_nousr(self, row):
         result = {}
         result['email_ID'] = row[0]
@@ -147,7 +161,7 @@ class EmailHandler:
         Outbox = dao.getOutbox(ID)
         result_list = []
         for row in Outbox:
-            result = self.build_email_dict(row)
+            result = self.build_outbox_dict(row)
             result_list.append(result)
         return jsonify(Outbox=result_list)
 

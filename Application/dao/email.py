@@ -63,7 +63,7 @@ class EmailDAO:
 
     def getOutbox(self,ID):
         cursor = self.conn.cursor()
-        query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s and is_deleted !=1;"
+        query = 'with outbox as ( select user_id, email_id, date_created, subject, body from "Email" where user_id = %s and is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, Rep.reply_id from Outbox as O left outer join replyIDs as Rep on email_id = Rep.reply_id;'
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
