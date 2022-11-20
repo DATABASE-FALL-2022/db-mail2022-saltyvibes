@@ -193,6 +193,15 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Outbox=result_list)
 
+    def getEmailFromUser(self, email_id,user_id):
+        dao = EmailDAO()
+        email_from_user = dao.getEmailFromUser(email_id,user_id)
+        result_list = []
+        for row in email_from_user:
+            result = self.build_email_dict(row)
+            result_list.append(result)
+        return jsonify(EmailFromUser=result_list)
+
     def getEmailWithMostRecipients(self):
         dao = EmailDAO()
         email = dao.getEmailWithMostRecipients()

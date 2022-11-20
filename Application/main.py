@@ -50,6 +50,10 @@ def getInbox(user_id):
 def getOutbox(user_id):
     return EmailHandler().getOutbox(user_id)
 
+@app.route('/EmailService/email_from_user/<int:email_id>/<int:user_id>')
+def getEmailFromUser(email_id,user_id):
+    return EmailHandler().getEmailFromUser(email_id,user_id)
+
 @app.route('/EmailService/EmailWithMostRecipients')
 def getEmailWithMostRecipients():
     return EmailHandler().getEmailWithMostRecipients()
