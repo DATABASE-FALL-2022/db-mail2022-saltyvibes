@@ -43,6 +43,20 @@ class EmailDAO:
         self.conn.commit()
         return email_id
 
+    def reply(self,date_created,subject,body,user_id,reply_id):
+        cursor = self.conn.cursor()
+        query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s, %s, %s) returning "Email".email_id, %s as rid ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_id, rid from email ) Select email_id from email;'
+        cursor.execute(query, (date_created, subject, body, user_id,reply_id,))
+        result =[]
+        for row in cursor:
+            result.append(row)
+        if len(result)!=1:
+            raise Exception("Couldn't execute Query")
+        print(result)
+        self.conn.commit()
+        email_id = result[0]
+        return result
+
     def getInbox(self,ID):
         cursor = self.conn.cursor()
         query =  'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = %s and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id;'

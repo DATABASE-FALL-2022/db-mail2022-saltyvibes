@@ -89,6 +89,12 @@ def getUserByID(user_id):
     else:
         return jsonify(Error = "Method not allowed"), 405
 
+@app.route('/EmailService/reply', methods=['POST'])
+def createReply():
+    if request.method == 'POST':
+        return EmailHandler().CreateReply(request.json)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
 
 if __name__ == '__main__':
     app.run()

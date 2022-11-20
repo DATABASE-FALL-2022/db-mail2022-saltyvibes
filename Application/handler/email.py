@@ -70,6 +70,16 @@ class EmailHandler:
         result["is_deleted"] = is_deleted
         return result
 
+    def build_reply_attributes(self, email_id, date_created, subject, body, user_id,reply_id):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = date_created
+        result["subject"] = subject
+        result["body"] = body
+        result["user_id"] = user_id
+        result["reply_id"] = reply_id
+        return result
+
     def getAllEmails(self):
         dao = EmailDAO()
         user_list = dao.getAllEmails()
@@ -122,6 +132,24 @@ class EmailHandler:
                 email_id = dao.insert(date_created, subject, body, user_id)
                 result = self.build_email_attributes(email_id, date_created, subject, body, user_id,is_deleted)
                 return jsonify(Email=result), 201
+            else:
+                return jsonify(Error="Unexpected attributes in post request"), 400
+
+    def CreateReply(self, form):
+        print(len(form))
+        if len(form) != 5:
+            return jsonify(Error="Malformed post request"), 400
+        else:
+            date_created = form["date_created"]
+            subject = form["subject"]
+            body = form["body"]
+            user_id = form["user_id"]
+            reply_id = form["reply_id"]
+            if date_created and subject and body and user_id and reply_id:
+                dao = EmailDAO()
+                email_id = dao.reply(date_created, subject, body, user_id,reply_id)
+                result = self.build_reply_attributes(email_id, date_created, subject, body, user_id,reply_id)
+                return jsonify(Reply=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
 
