@@ -225,3 +225,18 @@ class EmailHandler:
             return jsonify(Email_With_Most_Replies_Tied=result_list)
         else:
             return jsonify(Email_With_Most_Replies=result_list)
+
+    def sendEmail(self, category, user_id, email_ID): #insert into
+        cursor = self.conn.cursor()
+        query = "insert into receives(category, user_id, email_ID) values (%s, %s, %s) returning email_ID;"
+        cursor.execute(query, (category, user_id, email_ID,))
+        pid = cursor.fetchone()[0]
+        self.conn.commit()
+        return email_ID
+
+    def readEmail(self, email_ID): #update
+        cursor = self.conn.cursor()
+        query = "update receives set is_received = %s where email_ID = %s;"
+        cursor.execute(query, (email_ID,))
+        self.conn.commit()
+        return email_ID
