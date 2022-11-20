@@ -5,7 +5,6 @@ class EmailDAO:
         connection_url = "host=%s dbname=%s user=%s password=%s" % (pg_config['host'],pg_config['dbname'],pg_config['user'],pg_config['passwd'])
         self.conn = psycopg2._connect(connection_url)
 
-
     def getAllEmails(self):
         cursor = self.conn.cursor()
         query = 'Select * from "Email"'
@@ -46,12 +45,13 @@ class EmailDAO:
 
     def getInbox(self,ID):
         cursor = self.conn.cursor()
-        query =  "select E.user_id,E.email_id,E.date_created,E.subject,E.body from receives as R,\"Email\" as E where E.email_id = R.email_id and R.user_id = %s and R.is_deleted!=1;"
+        query =  'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = %s and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id;'
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
             result.append(row)
         return result
+
     def getEmailWithMostRecipientsbyUser(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT email_id FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id having count(email_id) =( SELECT count(email_id) as count FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
@@ -60,6 +60,7 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def getOutbox(self,ID):
         cursor = self.conn.cursor()
         query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s and is_deleted !=1;"

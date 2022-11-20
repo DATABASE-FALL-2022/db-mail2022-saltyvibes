@@ -13,12 +13,37 @@ class EmailHandler:
         result['body'] = row[4]
         return result
 
+    def build_inbox_dict(self, row):
+        result = {}
+        print(row)
+        result['user_id'] = row[0]
+        result['email_ID'] = row[1]
+        result['date_created'] = row[2]
+        result['subject'] = row[3]
+        result['body'] = row[4]
+        result['category'] = row[5]
+        if isinstance(row[6], int):
+            result["is_reply"] = 1
+        else:
+            result["is_reply"] = 0
+        return result
+
     def build_email_dict_nousr(self, row):
         result = {}
         result['email_ID'] = row[0]
         result['date_created'] = row[1]
         result['subject'] = row[2]
         result['body'] = row[3]
+        return result
+
+    def build_get_email_attributes(self,email_id,row):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = row[0]
+        result["subject"] = row[1]
+        result["body"] = row[2]
+        result["user_id"] = row[3]
+        result["is_deleted"] = row[4]
         return result
 
     def build_email_attributes(self, email_id, date_created, subject, body, user_id,is_deleted):
@@ -85,15 +110,7 @@ class EmailHandler:
                 return jsonify(Email=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
-    def build_get_email_attributes(self,email_id,row):
-        result = {}
-        result["email_id"] = email_id
-        result["date_created"] = row[0]
-        result["subject"] = row[1]
-        result["body"] = row[2]
-        result["user_id"] = row[3]
-        result["is_deleted"] = row[4]
-        return result
+
     def getEmailbyId(self,email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
@@ -108,9 +125,11 @@ class EmailHandler:
         inbox = dao.getInbox(ID)
         result_list = []
         for row in inbox:
-            result = self.build_email_dict(row)
+            result = self.build_inbox_dict(row)
             result_list.append(result)
         return jsonify(Inbox=result_list)
+
+
     def getEmailWithMostRecipientsbyUser(self,user_id):
         dao = EmailDAO()
         email = dao.getEmailWithMostRecipientsbyUser(user_id)

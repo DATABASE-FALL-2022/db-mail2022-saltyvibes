@@ -13,3 +13,4 @@ Application/dao/__pycache__/debug.cpython-311.pyc
 Application/dao/__pycache__/email.cpython-311.pyc
 Application/dao/__pycache__/user.cpython-311.pyc
 *.pyc
+*.pyc
