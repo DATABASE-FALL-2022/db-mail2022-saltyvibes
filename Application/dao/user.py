@@ -51,7 +51,7 @@ class UserDAO:
 
     def getTop10UsersOutbox(self):
         cursor = self.conn.cursor()
-        query = "with Top10Users as (select user_id,count(email_id) as count from \"Email\" group by user_id order by count(email_id) desc limit 10) SELECT user_id,name,email_address,password,is_premium,phone,date_of_birth,count from \"User\" natural inner join Top10Users order by count desc,name;"
+        query = "with Top10Users as ( select user_id, count(user_id) as count from receives group by user_id order by count(user_id) desc limit 10 ) SELECT user_id, name, email_address, password, is_premium, phone, date_of_birth from \"User\" natural inner join Top10Users order by count desc, name desc;"
         cursor.execute(query)
         result = []
         for row in cursor:

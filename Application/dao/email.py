@@ -5,7 +5,6 @@ class EmailDAO:
         connection_url = "host=%s dbname=%s user=%s password=%s" % (pg_config['host'],pg_config['dbname'],pg_config['user'],pg_config['passwd'])
         self.conn = psycopg2._connect(connection_url)
 
-
     def getAllEmails(self):
         cursor = self.conn.cursor()
         query = 'Select * from "Email"'
@@ -14,11 +13,19 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
-    def insert(self,date_created,subject,body,user_id):
+
+    def insert(self,date_created,subject,body,user_id, is_deleted):
         cursor = self.conn.cursor()
-        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s,%s,%s,%s) returning email_id;'
-        cursor.execute(query, (date_created, subject, body, user_id,))
+        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID, IS_DELETED) VALUES (%s, %s,%s,%s,%s) returning email_id;'
+        cursor.execute(query, (date_created, subject, body, user_id, is_deleted,))
         email_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return email_id
+
+    def update(self, email_id, date_created, subject, body, user_id, is_deleted):
+        cursor = self.conn.cursor()
+        query = 'UPDATE "Email" SET date_created = %s, subject = %s, body = %s, is_deleted = %s, user_id = %s WHERE email_id = %s'
+        cursor.execute(query, (date_created, subject, body, is_deleted, user_id, email_id,))
         self.conn.commit()
         return email_id
 
@@ -30,15 +37,29 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+    def reply(self, date_created, subject, body, user_id, reply_id):
+        cursor = self.conn.cursor()
+        query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s, %s, %s) returning "Email".email_id, %s as rid ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_id, rid from email ) Select email_id from email;'
+        cursor.execute(query, (date_created, subject, body, user_id,reply_id,))
+        result =[]
+        for row in cursor:
+            result.append(row)
+        if len(result)!=1:
+            raise Exception("Couldn't execute Query")
+        print(result)
+        self.conn.commit()
+        email_id = result[0]
+        return result
 
     def getInbox(self,ID):
         cursor = self.conn.cursor()
-        query =  "select E.user_id,E.email_id,E.date_created,E.subject,E.body from receives as R,\"Email\" as E where E.email_id = R.email_id and R.user_id = %s and R.is_deleted != 1;"
+        query = 'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = %s and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id;'
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
             result.append(row)
         return result
+
     def getEmailWithMostRecipientsbyUser(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT email_id FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id having count(email_id) =( SELECT count(email_id) as count FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
@@ -47,9 +68,10 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def getOutbox(self,ID):
         cursor = self.conn.cursor()
-        query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s and is_deleted != 1;"
+        query = 'with outbox as ( select user_id, email_id, date_created, subject, body from "Email" where user_id = %s and is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, Rep.reply_id from Outbox as O left outer join replyIDs as Rep on email_id = Rep.reply_id;'
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
@@ -63,6 +85,13 @@ class EmailDAO:
         result = []
         for row in cursor:
             result.append(row)
+        return result
+
+    def getEmailbyId(self, email_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
+        cursor.execute(query,(email_id,))
+        result = cursor.fetchone()
         return result
 
     def getEmailWithMostRecipients(self):
