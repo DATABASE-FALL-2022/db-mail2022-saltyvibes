@@ -171,6 +171,15 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Inbox=result_list)
 
+    def getFilteredInbox(self, ID,category):
+        dao = EmailDAO()
+        inbox = dao.getFilteredInbox(ID,category)
+        result_list = []
+        for row in inbox:
+            result = self.build_inbox_dict(row)
+            result_list.append(result)
+        return jsonify(Inbox=result_list)
+
 
     def getEmailWithMostRecipientsbyUser(self,user_id):
         dao = EmailDAO()

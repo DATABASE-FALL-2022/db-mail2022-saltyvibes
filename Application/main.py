@@ -46,6 +46,10 @@ def FillWithDummyData():
 def getInbox(user_id):
     return EmailHandler().getInbox(user_id)
 
+@app.route('/EmailService/inbox/<int:user_id>/filter/<string:category>')
+def getFilteredInbox(user_id,category):
+    return EmailHandler().getFilteredInbox(user_id,category)
+
 @app.route('/EmailService/outbox/<int:user_id>')
 def getOutbox(user_id):
     return EmailHandler().getOutbox(user_id)
@@ -100,7 +104,7 @@ def createReply():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
-@app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address')
+@app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address>')
 def getUserInfoByEmail():
     return UserHandler().getUserInfoByEmail()
 
