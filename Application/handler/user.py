@@ -43,6 +43,24 @@ class UserHandler:
         result['date_of_birth'] = row[5]
         return result
 
+    def build_user_password_attributes(self, user_id, password):
+        result = {}
+        result['user_id'] = user_id
+        result['password'] = password
+        return result
+
+    def build_user_premium_attributes(self, user_id, is_premium):
+        result = {}
+        result['user_id'] = user_id
+        result['is_premium'] = is_premium
+        return result
+
+    def build_friend_attributes(self, owner_id, friend_id):
+        result = {}
+        result['owner_id'] = owner_id
+        result['friend_id'] = friend_id
+        return result
+
     def getUserbyId(self,user_id):
         dao = UserDAO()
         row = dao.getUserbyId(user_id)
@@ -116,4 +134,66 @@ class UserHandler:
             result_list.append(result)
         return jsonify(Top_10_Users_With_More_Emails_In_Outbox=result_list)
 
+    def getUserInfoByEmail(self, email_address):
+        dao = UserDAO()
+        Users = dao.getUserInfoByEmail()
+        if not Users:
+            return jsonify(Error = "User Not Found"), 404
+        else:
+            result = self.build_user_dict(Users)
+            return jsonify(Get_User_Information_Using_Email_Address=result)
 
+    def addFriend(self, form):
+        if len(form) != 4:
+            return jsonify(Error="Malformed post request"), 400
+        else:
+            owner_id = form['owner_id']
+            friend_id = form['friend_id']
+            if owner_id and friend_id:
+                dao = UserDAO()
+                owner_id = dao.insert(owner_id, friend_id)
+                result = self.build_friend_attributes(owner_id, friend_id)
+                return jsonify(User=result), 201
+            else:
+                return jsonify(Error="Unexpected attributes in post request"), 400
+
+    def removeFriend(self, owner_id, friend_id):
+        dao = UserDAO()
+        if not dao.getUserByID(owner_id) and dao.getUserByID(friend_id):
+            return jsonify(Error = "Friendship not found."), 404
+        else:
+            dao.delete(friend_id)
+            dao.delete(owner_id)
+            return jsonify(DeleteStatus = "Deleted Friendship"), 200
+
+    def updatePassword(self, user_id, form):
+        dao = UserDAO()
+        if not dao.getPartById(user_id):
+            return jsonify(Error = "User not found."), 404
+        else:
+            if len(form) != 4:
+                return jsonify(Error="Malformed update request"), 400
+            else:
+                password = form['password']
+                if password:
+                    dao.update(user_id, password)
+                    result = self.build_user_password_attributes(user_id, password)
+                    return jsonify(Email=result), 200
+                else:
+                    return jsonify(Error="Unexpected attributes in update request"), 400
+
+    def updatePremium(self, user_id, form):
+        dao = UserDAO()
+        if not dao.getPartById(user_id):
+            return jsonify(Error = "User not found."), 404
+        else:
+            if len(form) != 4:
+                return jsonify(Error="Malformed update request"), 400
+            else:
+                is_premium = form['is_premium']
+                if is_premium:
+                    dao.update(user_id, is_premium)
+                    result = self.build_user_premium_attributes(user_id, is_premium)
+                    return jsonify(Email=result), 200
+                else:
+                    return jsonify(Error="Unexpected attributes in update request"), 400

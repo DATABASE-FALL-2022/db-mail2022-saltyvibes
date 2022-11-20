@@ -100,5 +100,10 @@ def createReply():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
+@app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address')
+def getUserInfoByEmail():
+    return UserHandler().getUserInfoByEmail()
+
+
 if __name__ == '__main__':
     app.run()
