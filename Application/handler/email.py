@@ -235,13 +235,29 @@ class EmailHandler:
         else:
             return jsonify(Email_With_Most_Replies=result_list)
 
-    def sendEmail(self, category, user_id, email_ID): #insert into
-        cursor = self.conn.cursor()
-        query = "insert into receives(category, user_id, email_ID) values (%s, %s, %s) returning email_ID;"
-        cursor.execute(query, (category, user_id, email_ID,))
-        pid = cursor.fetchone()[0]
-        self.conn.commit()
-        return email_ID
+    # def sendEmail(self, category, user_id, email_ID): #insert into
+    #     cursor = self.conn.cursor()
+    #     query = "insert into receives(category, user_id, email_ID) values (%s, %s, %s) returning email_ID;"
+    #     cursor.execute(query, (category, user_id, email_ID,))
+    #     pid = cursor.fetchone()[0]
+    #     self.conn.commit()
+    #     return email_ID
+
+    def sendEmail(self, form): #insert into
+        dao = EmailDAO()
+        if len(form) != 2:
+            return jsonify(Error="Malformed post request"), 400
+        email_id = form["email_id"]
+        user_id = form["user_id"]
+        if email_id and user_id:
+            if dao.getEmailbyId(email_id):
+                receive = dao.sendEmail(email_id,user_id)
+                result = self.build_email_dict(receive)
+                return jsonify(EmailFromUser=result)
+            else:
+                return jsonify(Error="Email not found or doesn't exist"), 404
+        else:
+            return jsonify(Error="Unexpected attributes in post request"), 400
 
     def readEmail(self, email_ID): #update
         cursor = self.conn.cursor()

@@ -16,7 +16,7 @@ CORS(app)
 
 @app.route('/')
 def greeting():
-    return 'Hello, this is the parts DB App!'
+    return 'Hello, this is the Email Service!'
 
 @app.route('/EmailService/email', methods = ['POST',"GET"])
 def getAllEmail():
@@ -104,9 +104,35 @@ def createReply():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
+@app.route('/EmailService/receive', methods=['POST','GET','PUT',"DELETE"])
+def createReceive():
+    if request.method == 'POST':
+        return EmailHandler().sendEmail(request.json)
+    elif request.method == "GET":
+        return EmailHandler().getFriend(request.json)
+    elif request.method == "PUT":
+        return EmailHandler().updateFriend(request.json)
+    elif request.method == "DELETE":
+        return EmailHandler().unsendEmail(request.json)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
+
 @app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address>')
 def getUserInfoByEmail():
     return UserHandler().getUserInfoByEmail()
+
+@app.route('/EmailService/Friend',methods=['POST','GET','PUT',"DELETE"])
+def Friend():
+    if request.method == 'POST':
+        return UserHandler().addFriend(request.json)
+    elif request.method == "GET":
+        return UserHandler().getFriend(request.json)
+    elif request.method == "PUT":
+        return UserHandler().updateFriend(request.json)
+    elif request.method == "DELETE":
+        return UserHandler().removeFriend(request.json)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
 
 
 if __name__ == '__main__':

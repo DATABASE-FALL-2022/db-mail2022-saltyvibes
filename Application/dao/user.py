@@ -49,6 +49,15 @@ class UserDAO:
         result = cursor.fetchone()
         return result
 
+    def getFriend(self,owner_id,friend_id):
+        cursor = self.conn.cursor()
+        query = 'with arefriends as ( select distinct owner_id, friend_id from "Friends" where owner_id = %s and friend_id = %s ) select user_id, "name", email_address, "password", is_premium, phone, date_of_birth from "User" as U, arefriends as F where u.user_id = F.owner_id or user_id = F.friend_id;'
+        cursor.execute(query,(owner_id,friend_id,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     def getTop10UsersOutbox(self):
         cursor = self.conn.cursor()
         query = "with Top10Users as ( select user_id, count(user_id) as count from receives group by user_id order by count(user_id) desc limit 10 ) SELECT user_id, name, email_address, password, is_premium, phone, date_of_birth from \"User\" natural inner join Top10Users order by count desc, name desc;"
@@ -67,7 +76,7 @@ class UserDAO:
 
     def addFriend(self, owner_id, friend_id):
         cursor = self.conn.cursor()
-        query = "insert into Friends(owner_id, friend_id) values (%s, %s) returning owner_id and friend_id;"
+        query = "insert into \"Friends\"(owner_id, friend_id) values (%s, %s) returning owner_id,friend_id;"
         cursor.execute(query, (owner_id, friend_id,))
         owner_id = cursor.fetchone()[0]
         self.conn.commit()
@@ -75,12 +84,22 @@ class UserDAO:
 
     def removeFriend(self, owner_id, friend_id):
         cursor = self.conn.cursor()
-        query = "delete from Friends where owner_id = %s and friend_id = %s " \
-                                    "or friend_id = %s and owner_id = %s " \
-                                    "returning owner_id;"
+        query = 'delete from "Friends" where owner_id = %s and friend_id = %s returning owner_id, friend_id'
         cursor.execute(query, (owner_id, friend_id,))
         self.conn.commit()
-        return owner_id
+        result = cursor.fetchone()
+        print(result)
+        return result
+
+
+
+    def updateFriend(self,owner_id,friend_id,new_owner_id,new_friend_id):
+        cursor = self.conn.cursor()
+        query = 'UPDATE "Friends" SET "owner_id" = %s, friend_id = %s WHERE owner_id = %s and friend_id = %s re'
+        cursor.execute(query,(new_owner_id,new_friend_id,owner_id,friend_id))
+        self.conn.commit()
+
+        return new_owner_id,new_friend_id
 
     def updatePassword(self, user_id, password):
         cursor = self.conn.cursor()
