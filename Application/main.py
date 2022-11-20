@@ -66,6 +66,9 @@ def getTop10UsersInbox():
 def getTop10UsersOutbox():
     return UserHandler().getTop10UsersOutbox()
 
+@app.route('/EmailService/EmailWithMostRecipientsbyUser/<int:user_id>')
+def getEmailWithMostRecipientsbyUser(user_id):
+    return EmailHandler().getEmailWithMostRecipientsbyUser(user_id)
 
 
 @app.route('/EmailService/users', methods=['GET','POST'])

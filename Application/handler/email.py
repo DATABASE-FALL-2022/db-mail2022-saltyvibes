@@ -111,6 +111,17 @@ class EmailHandler:
             result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Inbox=result_list)
+    def getEmailWithMostRecipientsbyUser(self,user_id):
+        dao = EmailDAO()
+        email = dao.getEmailWithMostRecipientsbyUser(user_id)
+        result_list = []
+        for row in email:
+            result = self.build_email_dict_nousr(row)
+            result_list.append(result)
+        if len(result_list) > 1:
+            return jsonify(Email_With_Most_Recipients_Tied=result_list)
+        else:
+            return jsonify(Email_With_Most_Recipients=result_list)
 
     def getOutbox(self, ID):
         dao = EmailDAO()

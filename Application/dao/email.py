@@ -52,7 +52,14 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
-
+    def getEmailWithMostRecipientsbyUser(self,user_id):
+        cursor = self.conn.cursor()
+        query = 'with most_recipients as (select R.email_id from receives as R group by R.email_id having count(email_id) =(select count(email_id) as count from receives group by email_id order by count desc limit 1)) select E.email_id, E.date_created, E.subject, E.body from "Email" as E,most_recipients as mr where E.email_id = mr.email_id and user_id = %s'
+        cursor.execute(query,(user_id,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
     def getOutbox(self,ID):
         cursor = self.conn.cursor()
         query = "select user_id,email_id,date_created,subject,body from \"Email\" where user_id = %s and is_deleted !=1;"
