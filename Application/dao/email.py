@@ -54,7 +54,7 @@ class EmailDAO:
         return result
     def getEmailWithMostRecipientsbyUser(self,user_id):
         cursor = self.conn.cursor()
-        query = 'with most_recipients as (select R.email_id from receives as R group by R.email_id having count(email_id) =(select count(email_id) as count from receives group by email_id order by count desc limit 1)) select E.email_id, E.date_created, E.subject, E.body from "Email" as E,most_recipients as mr where E.email_id = mr.email_id and user_id = %s'
+        query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT email_id FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id having count(email_id) =( SELECT count(email_id) as count FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
         cursor.execute(query,(user_id,))
         result = []
         for row in cursor:
