@@ -164,7 +164,14 @@ class EmailHandler:
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
-
+    def unsendReply(self,reply_id,original_id):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(reply_id):
+            return jsonify(Error="Email not found"), 404
+        else:
+            dao.unsendReply(reply_id,original_id)
+            return jsonify(DeleteStatus="OK"), 200
+        pass
     def CreateReply(self, form):
         print(len(form))
         if len(form) != 5:

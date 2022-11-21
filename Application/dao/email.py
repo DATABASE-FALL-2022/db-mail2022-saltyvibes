@@ -52,14 +52,18 @@ class EmailDAO:
         cursor.execute(query, (user_id, email_id,))
         self.conn.commit()
         return (user_id, email_id)
+    def unsendReply(self,reply_id,original_id):
+        cursor = self.conn.cursor()
+        query = 'DELETE FROM reply where original_id = %s and reply_id = %s'
+        cursor.execute(query, (original_id,reply_id,))
+        self.conn.commit()
+        return reply_id
     def delete(self, email_id):
         cursor = self.conn.cursor()
         query = 'DELETE from "Email" where email_id = %s'
         cursor.execute(query, (email_id,))
-        result = []
-        for row in cursor:
-            result.append(row)
-        return result
+        self.conn.commit()
+        return email_id
     def reply(self, date_created, subject, body, user_id, reply_id):
         cursor = self.conn.cursor()
         query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s, %s, %s) returning "Email".email_id, %s as rid ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_id, rid from email ) Select email_id from email;'
