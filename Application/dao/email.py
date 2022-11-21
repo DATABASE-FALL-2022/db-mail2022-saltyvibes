@@ -107,6 +107,17 @@ class EmailDAO:
             result.append(row)
         return result
 
+    def ReadEmailFromUser(self, user_id,email_id):
+        cursor = self.conn.cursor()
+        query = 'with viewed as ( update receives set is_viewed = 1 where user_id = %s and email_id = %s and is_deleted != 1 and is_viewed != 1 returning email_id ), support as ( insert into receives(user_id, email_id) select user_id, 0 from "Email" as E, viewed as V where E.email_id = V.email_id and V.email_id is not null returning user_id ) select E.user_id, E.email_id, date_created, subject, body, V.email_id from "Email" as E, support as S, viewed as V where E.email_id = V.email_id'
+        cursor.execute(query,(user_id,email_id,))
+        result = cursor.fetchone()
+        self.conn.commit()
+        return result
+
+
+
+
     def getEmailbyId(self, email_id):
         cursor = self.conn.cursor()
         query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'

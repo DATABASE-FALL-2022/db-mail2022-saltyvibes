@@ -70,6 +70,12 @@ def getEmailFromUser(email_id,user_id):
 def getEmailWithMostRecipients():
     return EmailHandler().getEmailWithMostRecipients()
 
+@app.route('/EmailService/ReadEmailFromUser')
+def ReadEmailFromUser():
+    return EmailHandler().ReadEmailFromUser(request.json)
+
+
+
 @app.route('/EmailService/EmailWithMostReplies')
 def getEmailWithMostReplies():
     return EmailHandler().getEmailWithMostReplies()

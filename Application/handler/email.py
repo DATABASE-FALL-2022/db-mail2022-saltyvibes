@@ -6,6 +6,8 @@ class EmailHandler:
     def build_email_dict(self, row):
         result = {}
         print(row)
+        if row is None:
+            return result
         result['user_id'] = row[0]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
@@ -28,6 +30,8 @@ class EmailHandler:
     def build_inbox_dict(self, row):
         result = {}
         print(row)
+        if row is None:
+            return result
         result['user_id'] = row[0]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
@@ -43,6 +47,8 @@ class EmailHandler:
     def build_outbox_dict(self, row):
         result = {}
         print(row)
+        if row is None:
+            return result
         result['user_id'] = row[0]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
@@ -56,6 +62,8 @@ class EmailHandler:
 
     def build_email_dict_nousr(self, row):
         result = {}
+        if row is None:
+            return result
         result['email_ID'] = row[0]
         result['date_created'] = row[1]
         result['subject'] = row[2]
@@ -65,6 +73,8 @@ class EmailHandler:
     def build_get_email_attributes(self, email_id, row):
         result = {}
         result["email_id"] = email_id
+        if row is None:
+            return result
         result["date_created"] = row[0]
         result["subject"] = row[1]
         result["body"] = row[2]
@@ -339,9 +349,18 @@ class EmailHandler:
         else:
             return jsonify(Error="Unexpected attributes in update request"), 400
 
-
-
-
+    def ReadEmailFromUser(self,form):
+        dao = EmailDAO()
+        if len(form) != 2:
+            return jsonify(Error="Malformed update request"), 400
+        user_id = form["user_id"]
+        email_id = form["email_id"]
+        if user_id and email_id:
+            receive = dao.ReadEmailFromUser(user_id, email_id)
+            result = self.build_email_dict(receive)
+            return jsonify(EmailRead=result)
+        else:
+            return jsonify(Error="Unexpected attributes in request"), 400
 
 
     def readEmail(self, email_ID):  # update
