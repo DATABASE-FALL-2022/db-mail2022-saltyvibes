@@ -86,7 +86,7 @@ class EmailHandler:
         result["is_deleted"] = row[4]
         return result
 
-    def build_email_attributes(self, email_id, date_created, subject, body, user_id, is_deleted):
+    def build_email_attributes2(self, email_id, date_created, subject, body, user_id, is_deleted):
         result = {}
         result["email_id"] = email_id
         result["date_created"] = date_created
@@ -137,9 +137,9 @@ class EmailHandler:
                 body = form["body"]
                 user_id = form["user_id"]
                 is_deleted = form["is_deleted"]
-                if date_created and subject and body and user_id and is_deleted:
+                if date_created and subject and body and user_id!=None and is_deleted!=None:
                     dao.update(email_id, date_created, subject, body, user_id, is_deleted)
-                    result = self.build_email_attributes(email_id, date_created, subject, body, user_id, is_deleted)
+                    result = self.build_email_attributes2(email_id, date_created, subject, body, user_id, is_deleted)
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
@@ -183,7 +183,7 @@ class EmailHandler:
                 is_deleted = form["is_deleted"]
                 if date_created and subject and body and user_id and is_deleted:
                     dao.updatereply(reply_id, date_created, subject, body, user_id, is_deleted)
-                    result = self.build_email_attributes(reply_id, date_created, subject, body, user_id, is_deleted)
+                    result = self.build_email_attributes2(reply_id, date_created, subject, body, user_id, is_deleted)
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
