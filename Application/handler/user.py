@@ -105,7 +105,7 @@ class UserHandler:
             dao.delete(user_id)
             return jsonify(DeleteStatus="OK"),200
     def InsertUser(self,form):
-        if len(form) != 4:
+        if len(form) != 6:
             return jsonify(Error="Malformed post request"), 400
         else:
             name = form['name']
@@ -114,7 +114,7 @@ class UserHandler:
             is_premium = form['is_premium']
             phone = form['phone']
             date_of_birth = form['date_of_birth']
-            if name and email_address and password and is_premium and phone and date_of_birth:
+            if name and email_address and password and is_premium!=None and phone and date_of_birth:
                 dao = UserDAO()
                 user_id = dao.insert(name,email_address,password,is_premium,phone,date_of_birth)
                 result = self.build_user_attributes(user_id,name,email_address,password,is_premium,phone,date_of_birth)
