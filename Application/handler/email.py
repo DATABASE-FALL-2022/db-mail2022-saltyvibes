@@ -115,6 +115,17 @@ class EmailHandler:
         result["user_id"] = user_id
         result["reply_id"] = reply_id
         return result
+
+    def build_reply_attributes2(self, email_id, date_created, subject, body, user_id, original_id):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = date_created
+        result["subject"] = subject
+        result["body"] = body
+        result["user_id"] = user_id
+        result["original_id"] = original_id
+        return result
+
     def getAllEmails(self):
         dao = EmailDAO()
         user_list = dao.getAllEmails()
@@ -204,11 +215,11 @@ class EmailHandler:
             subject = form["subject"]
             body = form["body"]
             user_id = form["user_id"]
-            reply_id = form["reply_id"]
-            if date_created and subject and body and user_id and reply_id:
+            original_id = form["original_id"]
+            if date_created and subject and body and user_id and original_id:
                 dao = EmailDAO()
-                email_id = dao.reply(date_created, subject, body, user_id, reply_id)
-                result = self.build_reply_attributes(email_id, date_created, subject, body, user_id, reply_id)
+                email_id = dao.reply(date_created, subject, body, user_id, original_id)
+                result = self.build_reply_attributes2(email_id[1], date_created, subject, body, user_id, original_id)
                 return jsonify(Reply=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400

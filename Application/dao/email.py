@@ -64,18 +64,12 @@ class EmailDAO:
         cursor.execute(query, (email_id,))
         self.conn.commit()
         return email_id
-    def reply(self, date_created, subject, body, user_id, reply_id):
+    def reply(self, date_created, subject, body, user_id, original_id):
         cursor = self.conn.cursor()
-        query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s, %s, %s) returning "Email".email_id, %s as rid ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_id, rid from email ) Select email_id from email;'
-        cursor.execute(query, (date_created, subject, body, user_id,reply_id,))
-        result =[]
-        for row in cursor:
-            result.append(row)
-        if len(result)!=1:
-            raise Exception("Couldn't execute Query")
-        print(result)
+        query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s,%s, %s) returning "Email".email_id, %s as email_to_reply ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_to_reply,email_id from email ) Select email_to_reply,email_id from email;'
+        cursor.execute(query, (date_created, subject, body, user_id,original_id,))
+        result = cursor.fetchone()
         self.conn.commit()
-        email_id = result[0]
         return result
 
     def getInbox(self,ID):
