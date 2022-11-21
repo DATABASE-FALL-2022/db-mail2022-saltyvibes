@@ -264,7 +264,7 @@ class EmailHandler:
     #     self.conn.commit()
     #     return email_ID
 
-    def sendEmail(self, form):
+
     def sendEmail(self, form):  # insert into
         dao = EmailDAO()
         if len(form) != 2:
@@ -335,7 +335,7 @@ class EmailHandler:
 
 
 
-    def readEmail(self, email_ID): #update
+
     def readEmail(self, email_ID):  # update
         cursor = self.conn.cursor()
         query = "update receives set is_received = %s where email_ID = %s;"
