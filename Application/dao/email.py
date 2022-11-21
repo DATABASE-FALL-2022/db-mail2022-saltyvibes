@@ -31,7 +31,7 @@ class EmailDAO:
 
     def delete(self, email_id):
         cursor = self.conn.cursor()
-        query = "UPDATE \"Email\" set is_deleted = 1 where is_deleted != 1;"
+        query = 'DELETE from "Email" where email_id = %s'
         cursor.execute(query, (email_id,))
         result = []
         for row in cursor:
@@ -111,7 +111,14 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
-
+    def getEmailWithMostRepliesbyUser(self,user_id):
+        cursor = self.conn.cursor()
+        query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = 2 ), Recipients_Count AS ( SELECT e.email_id FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id having count(e.email_id) =( SELECT count(e.email_id) as count FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
+        cursor.execute(query, (user_id,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
     def getEmailWithMostReplies(self):
         cursor = self.conn.cursor()
         query = "with most_replies as (select R.original_id from reply as R group by R.original_id having count(R.original_id) = (select count(original_id) as count from reply group by original_id order by count desc limit 1)) select E.email_id,E.date_created,E.subject,E.body from \"Email\" as E,most_replies as mr where E.email_id = mr.original_id;"
@@ -120,7 +127,6 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
-
     def sendEmail(self, email_id, user_id):
         cursor = self.conn.cursor()
         query = 'with entry as ( insert into receives( is_viewed, is_deleted, category, user_id, email_id ) values (0, 0, \'No Category\', %s, %s) returning email_id ) select user_id, Em.email_id, date_created, subject, body from "Email" as Em, entry as En where Em.email_id = En.email_id;'
