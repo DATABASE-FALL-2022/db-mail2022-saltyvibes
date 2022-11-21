@@ -55,7 +55,7 @@ class UserHandler:
         result['is_premium'] = is_premium
         return result
 
-    def build_friend_attributes(self, owner_id, friend_id):
+    def build_friend_attributes2(self, owner_id, friend_id):
         result = {}
         result['owner_id'] = owner_id
         result['friend_id'] = friend_id
@@ -158,7 +158,7 @@ class UserHandler:
             if owner_id and friend_id:
                 dao = UserDAO()
                 owner_id = dao.addFriend(owner_id, friend_id)
-                result = self.build_friend_attributes(owner_id, friend_id)
+                result = self.build_friend_attributes2(owner_id, friend_id)
                 return jsonify(User=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
