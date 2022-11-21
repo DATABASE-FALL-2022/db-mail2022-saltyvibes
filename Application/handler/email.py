@@ -222,7 +222,7 @@ class EmailHandler:
         pass
     def deleteemailfromoutbox(self,user_id,email_id):
         dao = EmailDAO()
-        if not dao.getEmailbyId(email_id):
+        if not dao.getEmailFromUser(email_id,user_id):
             return jsonify(Error="Email not found"), 404
         else:
             dao.deleteemailfromoutbox(user_id, email_id)
