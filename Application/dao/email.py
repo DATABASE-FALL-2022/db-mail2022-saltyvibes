@@ -54,10 +54,10 @@ class EmailDAO:
         return (user_id, email_id)
     def unsendReply(self,reply_id,original_id):
         cursor = self.conn.cursor()
-        query = 'DELETE FROM reply where original_id = %s and reply_id = %s'
+        query = 'DELETE FROM reply where original_id = %s and reply_id = %s returning original_id,reply_id'
         cursor.execute(query, (original_id,reply_id,))
         self.conn.commit()
-        return reply_id
+        return cursor.fetchone()
     def delete(self, email_id):
         cursor = self.conn.cursor()
         query = 'DELETE from "Email" where email_id = %s'
