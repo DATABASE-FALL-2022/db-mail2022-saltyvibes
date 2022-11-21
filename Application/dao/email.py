@@ -177,10 +177,10 @@ class EmailDAO:
 
     def updateReceive(self, user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category):
         cursor = self.conn.cursor()
-        query = 'UPDATE receives SET user_id = %s, email_id = %s, is_viewed = %s, is_deleted = %s, category = %s WHERE user_id = %s and email_id = %s'
+        query = 'UPDATE receives SET user_id = %s, email_id = %s, is_viewed = %s, is_deleted = %s, category = %s WHERE user_id = %s and email_id = %s returning user_id'
         cursor.execute(query, (new_user_id, new_email_id,is_viewed,is_deleted,category, user_id, email_id))
         self.conn.commit()
-        return new_user_id, new_email_id,is_viewed,is_deleted,category
+        return cursor.fetchone()
 
     def getReceive(self, user_id,email_id):
         cursor = self.conn.cursor()

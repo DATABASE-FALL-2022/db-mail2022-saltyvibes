@@ -1,5 +1,6 @@
 from flask import jsonify
 from dao.email import EmailDAO
+from dao.user import UserDAO
 
 
 class EmailHandler:
@@ -25,6 +26,15 @@ class EmailHandler:
         result['is_viewed'] = row[2]
         result['is_deleted'] = row[3]
         result['category'] = row[4]
+        return result
+
+    def build_receives_dict2(self,user_id, email_id,is_viewed,is_deleted,category):
+        result = {}
+        result['user_id'] = user_id
+        result['email_id'] = email_id
+        result['is_viewed'] = is_viewed
+        result['is_deleted'] = is_deleted
+        result['category'] = category
         return result
 
     def build_inbox_dict(self, row):
@@ -378,6 +388,7 @@ class EmailHandler:
 
     def updateReceives(self,form):
         dao = EmailDAO()
+        userdao = UserDAO()
         if len(form) != 7:
             return jsonify(Error="Malformed update request"), 400
         user_id = form["user_id"]
@@ -389,10 +400,19 @@ class EmailHandler:
         category = form["category"]
         print(form)
         if user_id and email_id and  new_user_id and  new_email_id and is_viewed!=None and is_deleted!=None and category:
-
-                receives = dao.updateReceive(user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category)
-                result = self.build_receives_dict(receives)
-                return jsonify(Receive=result), 200
+                if dao.getEmailbyId(new_email_id) and dao.getEmailbyId(email_id):
+                    if userdao.getUserbyId(user_id) and userdao.getUserbyId(new_user_id):
+                        receives = dao.updateReceive(user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category)
+                        print(receives)
+                        if receives==None :
+                            return jsonify(Error="update error"), 404
+                        else:
+                            result = self.build_receives_dict2(new_user_id, new_email_id,is_viewed,is_deleted,category)
+                            return jsonify(Receive=result), 200
+                    else:
+                        return jsonify(Error="user id does not exist"), 404
+                else:
+                    return jsonify(Error="email id does not exist"), 404
 
         else:
                 return jsonify(Error="Unexpected attributes in update request"),400
