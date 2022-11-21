@@ -82,6 +82,10 @@ def getEmailWithMostRecipientsbyUser(user_id):
 def getEmailWithMostRepliesbyUser(user_id):
     return EmailHandler().getEmailWithMostRepliesbyUser(user_id)
 
+@app.route('/EmailService/TopFiveUsersSentEmails/<int:user_id>')
+def getTopFiveUsersSentEmails(user_id):
+    return UserHandler().TopFiveUsersSentEmails(user_id)
+
 @app.route('/EmailService/users', methods=['GET','POST'])
 def getAllUsers():
     if request.method == 'POST':

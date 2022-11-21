@@ -22,7 +22,14 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
-
+    def TopFiveUserSentEmails(self,user_id):
+        cursor = self.conn.cursor()
+        query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s), TOPFIVEUSERS AS ( SELECT r.user_id, COUNT(email_id) as count_email FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by r.user_id ORDER BY count_email DESC LIMIT 5 ) SELECT * FROM "User" u natural inner join TOPFIVEUSERS TFU WHERE U.user_id = TFU.user_id'
+        cursor.execute(query,(user_id,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
     def insert(self,name,email_address,password,is_premium,phone,date_of_birth):
         cursor = self.conn.cursor()
         query = 'insert into "User"("name", email_address, "password", is_premium, phone, date_of_birth) values (%s,%s,%s,%s,%s,%s) returning user_id;'

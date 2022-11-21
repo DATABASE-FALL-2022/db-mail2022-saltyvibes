@@ -79,7 +79,6 @@ class EmailHandler:
         result["user_id"] = user_id
         result["reply_id"] = reply_id
         return result
-
     def getAllEmails(self):
         dao = EmailDAO()
         user_list = dao.getAllEmails()

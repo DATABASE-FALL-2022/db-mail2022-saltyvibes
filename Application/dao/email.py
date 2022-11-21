@@ -127,7 +127,6 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
-
     def sendEmail(self, email_id, user_id):
         cursor = self.conn.cursor()
         query = 'with entry as ( insert into receives( is_viewed, is_deleted, category, user_id, email_id ) values (0, 0, \'No Category\', %s, %s) returning email_id ) select user_id, Em.email_id, date_created, subject, body from "Email" as Em, entry as En where Em.email_id = En.email_id;'
