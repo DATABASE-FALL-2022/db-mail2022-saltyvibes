@@ -34,7 +34,12 @@ class EmailDAO:
         cursor.execute(query,(user_id,email_id,))
         self.conn.commit()
         return (user_id,email_id)
-
+    def deleteemailfromoutbox(self,user_id,email_id):
+        cursor = self.conn.cursor()
+        query = 'UPDATE "Email" SET is_deleted = 1 where is_deleted != 1 and user_id = %s and email_id = %s'
+        cursor.execute(query, (user_id, email_id,))
+        self.conn.commit()
+        return (user_id, email_id)
     def delete(self, email_id):
         cursor = self.conn.cursor()
         query = 'DELETE from "Email" where email_id = %s'

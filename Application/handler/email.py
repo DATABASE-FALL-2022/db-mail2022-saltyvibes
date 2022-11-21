@@ -170,6 +170,14 @@ class EmailHandler:
             dao.deleteemailfrominbox(user_id,email_id)
             return jsonify(DeleteStatus="OK"), 200
         pass
+    def deleteemailfromoutbox(self,user_id,email_id):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(email_id):
+            return jsonify(Error="Email not found"), 404
+        else:
+            dao.deleteemailfromoutbox(user_id, email_id)
+            return jsonify(DeleteStatus="OK"), 200
+
     def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
