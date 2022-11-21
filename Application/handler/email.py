@@ -42,6 +42,10 @@ class EmailHandler:
             result["is_reply"] = 1
         else:
             result["is_reply"] = 0
+        if isinstance(row[7], int):
+            result["is_friend"] = 1
+        else:
+            result["is_friend"] = 0
         return result
 
     def build_outbox_dict(self, row):

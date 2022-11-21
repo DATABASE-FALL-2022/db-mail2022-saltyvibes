@@ -76,7 +76,7 @@ class EmailDAO:
 
     def getInbox(self,ID):
         cursor = self.conn.cursor()
-        query = 'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = %s and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id order by date_created desc;'
+        query = 'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = 4 and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ), x as ( select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id order by date_created desc ) select user_id, email_id, date_created, subject, body, category, reply_id,friend_id from x left outer join "Friends" as F on x.user_id = F.friend_id;'
         cursor.execute(query,(ID,))
         result = []
         for row in cursor:
@@ -112,7 +112,7 @@ class EmailDAO:
 
     def getEmailFromUser(self, email_id,user_id):
         cursor = self.conn.cursor()
-        query = "select user_id,email_id,date_created,subject,body from \"Email\" where email = %s and user_id = %s and is_deleted != 1;"
+        query = "select user_id,email_id,date_created,subject,body from \"Email\" where email_id = %s and user_id = %s and is_deleted != 1;"
         cursor.execute(query,(email_id,user_id,))
         result = []
         for row in cursor:
