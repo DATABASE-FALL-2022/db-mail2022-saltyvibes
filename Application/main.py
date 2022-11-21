@@ -129,6 +129,17 @@ def createReply():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
+@app.route('/EmailService/reply/<int:reply_id>', methods=['GET','PUT','DELETE'])
+def getReplybyId(reply_id):
+    if request.method == "GET":
+        return EmailHandler().getReply(reply_id)
+    elif request.method == "PUT":
+        return EmailHandler().updateReply(reply_id,request.json)
+    elif request.method == "DELETE":
+        return EmailHandler().unsendReply(reply_id,request.json)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
+
 @app.route('/EmailService/receive', methods=['POST','GET','PUT',"DELETE"])
 def createReceive():
     if request.method == 'POST':

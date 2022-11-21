@@ -155,6 +155,26 @@ class EmailHandler:
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
 
+    def updateReply(self,reply_id,form):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(reply_id):
+            return jsonify(Error="Email not found"), 404
+        else:
+            if len(form) != 5:
+                return jsonify(Error="Malformed update request"), 400
+            else:
+                date_created = form["date_created"]
+                subject = form["subject"]
+                body = form["body"]
+                user_id = form["user_id"]
+                is_deleted = form["is_deleted"]
+                if date_created and subject and body and user_id and is_deleted:
+                    dao.updatereply(reply_id, date_created, subject, body, user_id, is_deleted)
+                    result = self.build_email_attributes(reply_id, date_created, subject, body, user_id, is_deleted)
+                    return jsonify(Email=result), 200
+                else:
+                    return jsonify(Error="Unexpected attributes in update request"), 400
+
     def CreateReply(self, form):
         print(len(form))
         if len(form) != 5:
@@ -187,7 +207,14 @@ class EmailHandler:
         else:
             dao.deleteemailfromoutbox(user_id, email_id)
             return jsonify(DeleteStatus="OK"), 200
-
+    def getReply(self,reply_id):
+        dao = EmailDAO()
+        row = dao.getreply(reply_id)
+        if not row:
+            return jsonify(Error="Email Not Found"), 404
+        else:
+            email = self.build_get_email_attributes(reply_id, row)
+            return jsonify(Email=email)
     def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)

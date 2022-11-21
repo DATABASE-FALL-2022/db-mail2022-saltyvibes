@@ -28,6 +28,18 @@ class EmailDAO:
         cursor.execute(query, (date_created, subject, body, is_deleted, user_id, email_id,))
         self.conn.commit()
         return email_id
+    def updatereply(self,reply_id,date_created, subject, body, user_id, is_deleted):
+        cursor = self.conn.cursor()
+        query = 'UPDATE "Email" SET date_created = %s, subject = %s, body = %s, is_deleted = %s, user_id = %s WHERE email_id = %s'
+        cursor.execute(query, (date_created, subject, body, is_deleted, user_id, reply_id,))
+        self.conn.commit()
+        return reply_id
+    def getreply(self,reply_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
+        cursor.execute(query, (reply_id,))
+        result = cursor.fetchone()
+        return result
     def deleteemailfrominbox(self,user_id,email_id):
         cursor = self.conn.cursor()
         query = 'UPDATE receives SET is_deleted = 1 where is_deleted != 1 and user_id = %s and email_id = %s'
