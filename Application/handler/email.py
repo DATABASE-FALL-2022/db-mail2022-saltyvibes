@@ -96,6 +96,16 @@ class EmailHandler:
         result["is_deleted"] = is_deleted
         return result
 
+    def build_email_attributes(self, email_id, date_created, subject, body, user_id):
+        result = {}
+        result["email_id"] = email_id
+        result["date_created"] = date_created
+        result["subject"] = subject
+        result["body"] = body
+        result["user_id"] = user_id
+
+        return result
+
     def build_reply_attributes(self, email_id, date_created, subject, body, user_id, reply_id):
         result = {}
         result["email_id"] = email_id
@@ -150,11 +160,10 @@ class EmailHandler:
             subject = form["subject"]
             body = form["body"]
             user_id = form["user_id"]
-            is_deleted = form["is_deleted"]
-            if date_created and subject and body and user_id and is_deleted:
+            if date_created and subject and body and user_id:
                 dao = EmailDAO()
                 email_id = dao.insert(date_created, subject, body, user_id)
-                result = self.build_email_attributes(email_id, date_created, subject, body, user_id, is_deleted)
+                result = self.build_email_attributes(email_id, date_created, subject, body, user_id)
                 return jsonify(Email=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400

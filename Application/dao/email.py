@@ -14,10 +14,10 @@ class EmailDAO:
             result.append(row)
         return result
 
-    def insert(self,date_created,subject,body,user_id, is_deleted):
+    def insert(self,date_created,subject,body,user_id):
         cursor = self.conn.cursor()
-        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID, IS_DELETED) VALUES (%s, %s,%s,%s,%s) returning email_id;'
-        cursor.execute(query, (date_created, subject, body, user_id, is_deleted,))
+        query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s,%s,%s) returning email_id;'
+        cursor.execute(query, (date_created, subject, body, user_id,))
         email_id = cursor.fetchone()[0]
         self.conn.commit()
         return email_id
