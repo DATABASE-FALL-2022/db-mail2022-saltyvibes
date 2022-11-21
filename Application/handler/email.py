@@ -177,7 +177,14 @@ class EmailHandler:
         else:
             dao.deleteemailfromoutbox(user_id, email_id)
             return jsonify(DeleteStatus="OK"), 200
-
+    def getReply(self,reply_id):
+        dao = EmailDAO()
+        row = dao.getreply(reply_id)
+        if not row:
+            return jsonify(Error="Email Not Found"), 404
+        else:
+            email = self.build_get_email_attributes(reply_id, row)
+            return jsonify(Email=email)
     def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
