@@ -109,9 +109,9 @@ def createReceive():
     if request.method == 'POST':
         return EmailHandler().sendEmail(request.json)
     elif request.method == "GET":
-        return EmailHandler().getFriend(request.json)
+        return EmailHandler().getReceives(request.json)
     elif request.method == "PUT":
-        return EmailHandler().updateFriend(request.json)
+        return EmailHandler().updateReceives(request.json)
     elif request.method == "DELETE":
         return EmailHandler().unsendEmail(request.json)
     else:

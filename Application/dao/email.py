@@ -129,6 +129,28 @@ class EmailDAO:
         self.conn.commit()
         return email
 
+    def unsendEmail(self, email_id, user_id):
+        cursor = self.conn.cursor()
+        query = 'with entry as ( delete from receives where user_id = %s and email_id = %s returning user_id, email_id ) select Em.user_id, Em.email_id, date_created, subject, body, Em.is_deleted from "Email" as Em, entry as En where Em.email_id = En.email_id'
+        cursor.execute(query, (user_id, email_id,))
+        email = cursor.fetchone()
+        self.conn.commit()
+        return email
+
+    def updateReceive(self, user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category):
+        cursor = self.conn.cursor()
+        query = 'UPDATE receives SET user_id = %s, email_id = %s, is_viewed = %s, is_deleted = %s, category = %s WHERE user_id = %s and email_id = %s'
+        cursor.execute(query, (new_user_id, new_email_id,is_viewed,is_deleted,category, user_id, email_id))
+        self.conn.commit()
+        return new_user_id, new_email_id,is_viewed,is_deleted,category
+
+    def getReceive(self, user_id,email_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT user_id, email_id, is_viewed, is_deleted,category FROM receives WHERE user_id=%s and email_id = %s'
+        cursor.execute(query,(user_id,email_id,))
+        result = cursor.fetchone()
+        return result
+
     def readEmail(self, email_ID):
         cursor = self.conn.cursor()
         query = "update receives set is_viewed = 1 where email_ID = %s returning email_ID;"

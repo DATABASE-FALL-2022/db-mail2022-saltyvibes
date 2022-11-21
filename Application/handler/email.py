@@ -6,11 +6,23 @@ class EmailHandler:
     def build_email_dict(self, row):
         result = {}
         print(row)
-        result['user_id'] = row[3]
+        result['user_id'] = row[0]
         result['email_ID'] = row[1]
         result['date_created'] = row[2]
         result['subject'] = row[3]
         result['body'] = row[4]
+        return result
+
+    def build_receives_dict(self, row):
+        result = {}
+        print(row)
+        if row is None:
+            return result
+        result['user_id'] = row[0]
+        result['email_id'] = row[1]
+        result['is_viewed'] = row[2]
+        result['is_deleted'] = row[3]
+        result['category'] = row[4]
         return result
 
     def build_inbox_dict(self, row):
@@ -243,7 +255,7 @@ class EmailHandler:
     #     self.conn.commit()
     #     return email_ID
 
-    def sendEmail(self, form): #insert into
+    def sendEmail(self, form):
         dao = EmailDAO()
         if len(form) != 2:
             return jsonify(Error="Malformed post request"), 400
@@ -258,6 +270,60 @@ class EmailHandler:
                 return jsonify(Error="Email not found or doesn't exist"), 404
         else:
             return jsonify(Error="Unexpected attributes in post request"), 400
+
+    def unsendEmail(self, form):
+        dao = EmailDAO()
+        if len(form) != 2:
+            return jsonify(Error="Malformed post request"), 400
+        email_id = form["email_id"]
+        user_id = form["user_id"]
+        if email_id and user_id:
+            if dao.getEmailbyId(email_id):
+                receive = dao.unsendEmail(email_id,user_id)
+                result = self.build_email_dict(receive)
+                return jsonify(EmailFromUser=result)
+            else:
+                return jsonify(Error="Email not found or doesn't exist"), 404
+        else:
+            return jsonify(Error="Unexpected attributes in post request"), 400
+
+    def updateReceives(self,form):
+        dao = EmailDAO()
+        if len(form) != 7:
+            return jsonify(Error="Malformed update request"), 400
+        user_id = form["user_id"]
+        email_id = form["email_id"]
+        new_user_id = form["new_user_id"]
+        new_email_id = form["new_email_id"]
+        is_viewed = form["is_viewed"]
+        is_deleted = form["is_deleted"]
+        category = form["category"]
+        print(form)
+        if user_id and email_id and  new_user_id and  new_email_id and is_viewed!=None and is_deleted!=None and category:
+
+                receives = dao.updateReceive(user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category)
+                result = self.build_receives_dict(receives)
+                return jsonify(Receive=result), 200
+
+        else:
+                return jsonify(Error="Unexpected attributes in update request"),400
+
+    def getReceives(self,form):
+        dao = EmailDAO()
+        if len(form) != 2:
+            return jsonify(Error="Malformed update request"), 400
+        user_id = form["user_id"]
+        email_id = form["email_id"]
+        if user_id and email_id:
+            receive = dao.getReceive(user_id, email_id)
+            result = self.build_receives_dict(receive)
+            return jsonify(EmailFromUser=result)
+        else:
+            return jsonify(Error="Unexpected attributes in update request"), 400
+
+
+
+
 
     def readEmail(self, email_ID): #update
         cursor = self.conn.cursor()
