@@ -145,7 +145,7 @@ class EmailDAO:
         return result
     def getEmailWithMostRepliesbyUser(self,user_id):
         cursor = self.conn.cursor()
-        query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = 2 ), Recipients_Count AS ( SELECT e.email_id FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id having count(e.email_id) =( SELECT count(e.email_id) as count FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
+        query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT e.email_id FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id having count(e.email_id) =( SELECT count(e.email_id) as count FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
         cursor.execute(query, (user_id,))
         result = []
         for row in cursor:
