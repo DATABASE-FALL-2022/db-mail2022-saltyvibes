@@ -13,8 +13,8 @@ class UserHandler:
         result['phone'] = row[5]
         result['date_of_birth'] = row[6]
         return result
-    def build_user_attributes(self,user_id,name,email_address,password,is_premium,phone,date_of_birth):
 
+    def build_user_attributes(self,user_id,name,email_address,password,is_premium,phone,date_of_birth):
         result = {}
         result['user_id'] = user_id
         result['name'] = name
@@ -24,6 +24,7 @@ class UserHandler:
         result['phone'] = phone
         result['date_of_birth'] = date_of_birth
         return result
+
     def getAllUsers(self):
         dao = UserDAO()
         user_list = dao.getAllUsers()
@@ -32,6 +33,7 @@ class UserHandler:
             result = self.build_user_dict(row)
             result_list.append(result)
         return jsonify(Users=result_list)
+
     def build_get_userid_attributes(self,user_id,row):
         result = {}
         result['user_id'] = user_id
@@ -104,6 +106,7 @@ class UserHandler:
         else:
             dao.delete(user_id)
             return jsonify(DeleteStatus="OK"),200
+
     def InsertUser(self,form):
         if len(form) != 6:
             return jsonify(Error="Malformed post request"), 400
@@ -196,6 +199,7 @@ class UserHandler:
                 result = self.build_user_dict(row)
                 result_list.append(result)
             return jsonify(TopFiveUsers=result_list)
+
     def TopFiveUsersReceivedEmails(self,user_id):
         dao = UserDAO()
         if not dao.getUserbyId(user_id):
@@ -226,7 +230,6 @@ class UserHandler:
                 result_list.append(result)
             return jsonify(Owner_and_Friend=result_list)
 
-
     def removeFriend(self, form):
         dao = UserDAO()
         if len(form) != 2:
@@ -237,7 +240,7 @@ class UserHandler:
                 if not dao.getFriend(owner_id, friend_id):
                     return jsonify(Error = "Friendship not found."), 404
                 else:
-                    Friend =dao.removeFriend(owner_id,friend_id)
+                    Friend =dao.removeFriend(owner_id, friend_id)
                     print(Friend)
                     result = self.build_friend_attributes(Friend)
                     return jsonify(DeletedFriend=result), 200

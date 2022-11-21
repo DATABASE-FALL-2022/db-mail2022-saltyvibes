@@ -36,11 +36,9 @@ def getEmailbyId(email_id):
     else:
         return jsonify(Error = "Method not allowed"), 405
 
-
 @app.route('/EmailService/User/fillwithdummy')
 def FillWithDummyData():
     return DebugHandler().fill()
-
 
 @app.route('/EmailService/inbox/<int:user_id>')
 def getInbox(user_id):
@@ -73,8 +71,6 @@ def getEmailWithMostRecipients():
 @app.route('/EmailService/ReadEmailFromUser')
 def ReadEmailFromUser():
     return EmailHandler().ReadEmailFromUser(request.json)
-
-
 
 @app.route('/EmailService/EmailWithMostReplies')
 def getEmailWithMostReplies():
@@ -144,6 +140,7 @@ def deleteReplyByID(reply_id,original_id):
         return EmailHandler().unsendReply(reply_id,original_id)
     else:
         return jsonify(Error = "Method not allowed"), 405
+
 @app.route('/EmailService/receive', methods=['POST','GET','PUT',"DELETE"])
 def createReceive():
     if request.method == 'POST':

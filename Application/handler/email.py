@@ -113,7 +113,6 @@ class EmailHandler:
         result["subject"] = subject
         result["body"] = body
         result["user_id"] = user_id
-
         return result
 
     def build_reply_attributes(self, email_id, date_created, subject, body, user_id, reply_id):
@@ -208,6 +207,7 @@ class EmailHandler:
                     return jsonify(Email=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"), 400
+
     def unsendReply(self,reply_id,original_id):
         dao = EmailDAO()
         if not dao.getreply(reply_id):
@@ -236,6 +236,7 @@ class EmailHandler:
                 return jsonify(Reply=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
+
     def deleteemailfrominbox(self,user_id,email_id):
         dao = EmailDAO()
         if not dao.getEmailbyId(email_id):
@@ -244,6 +245,7 @@ class EmailHandler:
             dao.deleteemailfrominbox(user_id,email_id)
             return jsonify(DeleteStatus="OK"), 200
         pass
+
     def deleteemailfromoutbox(self,user_id,email_id):
         dao = EmailDAO()
         if not dao.getEmailFromUser(email_id,user_id):
@@ -251,6 +253,7 @@ class EmailHandler:
         else:
             dao.deleteemailfromoutbox(user_id, email_id)
             return jsonify(DeleteStatus="OK"), 200
+
     def getReply(self,reply_id):
         dao = EmailDAO()
         row = dao.getreply(reply_id)
@@ -259,6 +262,7 @@ class EmailHandler:
         else:
             email = self.build_get_email_attributes(reply_id, row)
             return jsonify(Email=email)
+
     def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
@@ -352,9 +356,7 @@ class EmailHandler:
         else:
             return jsonify(Email_With_Most_Replies=result_list)
 
-
-
-    def sendEmail(self, form):  # insert into
+    def sendEmail(self, form):
         dao = EmailDAO()
         if len(form) != 2:
             return jsonify(Error="Malformed post request"), 400
@@ -443,8 +445,7 @@ class EmailHandler:
         else:
             return jsonify(Error="Unexpected attributes in request"), 400
 
-
-    def readEmail(self, email_ID):  # update
+    def readEmail(self, email_ID):
         cursor = self.conn.cursor()
         query = "update receives set is_received = %s where email_ID = %s;"
         cursor.execute(query, (email_ID,))

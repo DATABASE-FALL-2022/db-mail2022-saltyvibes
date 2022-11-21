@@ -14,7 +14,7 @@ class EmailDAO:
             result.append(row)
         return result
 
-    def insert(self,date_created,subject,body,user_id):
+    def insert(self, date_created, subject, body, user_id):
         cursor = self.conn.cursor()
         query = 'INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s,%s,%s) returning email_id;'
         cursor.execute(query, (date_created, subject, body, user_id,))
@@ -28,42 +28,49 @@ class EmailDAO:
         cursor.execute(query, (date_created, subject, body, is_deleted, user_id, email_id,))
         self.conn.commit()
         return email_id
+
     def updatereply(self,reply_id,date_created, subject, body, user_id, is_deleted):
         cursor = self.conn.cursor()
         query = 'UPDATE "Email" SET date_created = %s, subject = %s, body = %s, is_deleted = %s, user_id = %s WHERE email_id = %s'
         cursor.execute(query, (date_created, subject, body, is_deleted, user_id, reply_id,))
         self.conn.commit()
         return reply_id
+
     def getreply(self,reply_id):
         cursor = self.conn.cursor()
         query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
         cursor.execute(query, (reply_id,))
         result = cursor.fetchone()
         return result
+
     def deleteemailfrominbox(self,user_id,email_id):
         cursor = self.conn.cursor()
         query = 'UPDATE receives SET is_deleted = 1 where is_deleted != 1 and user_id = %s and email_id = %s'
         cursor.execute(query,(user_id,email_id,))
         self.conn.commit()
         return (user_id,email_id)
+
     def deleteemailfromoutbox(self,user_id,email_id):
         cursor = self.conn.cursor()
         query = 'UPDATE "Email" SET is_deleted = 1 where is_deleted != 1 and user_id = %s and email_id = %s'
         cursor.execute(query, (user_id, email_id,))
         self.conn.commit()
         return (user_id, email_id)
+
     def unsendReply(self,reply_id,original_id):
         cursor = self.conn.cursor()
         query = 'DELETE FROM reply where original_id = %s and reply_id = %s returning original_id,reply_id'
         cursor.execute(query, (original_id,reply_id,))
         self.conn.commit()
         return cursor.fetchone()
+
     def delete(self, email_id):
         cursor = self.conn.cursor()
         query = 'DELETE from "Email" where email_id = %s'
         cursor.execute(query, (email_id,))
         self.conn.commit()
         return email_id
+
     def reply(self, date_created, subject, body, user_id, original_id):
         cursor = self.conn.cursor()
         query = 'with email as ( INSERT INTO "Email"(DATE_CREATED, SUBJECT, BODY, USER_ID) VALUES (%s, %s,%s, %s) returning "Email".email_id, %s as email_to_reply ), rep as ( INSERT INTO reply (original_id, reply_id) Select email_to_reply,email_id from email ) Select email_to_reply,email_id from email;'
@@ -125,9 +132,6 @@ class EmailDAO:
         self.conn.commit()
         return result
 
-
-
-
     def getEmailbyId(self, email_id):
         cursor = self.conn.cursor()
         query = 'SELECT date_created, subject, body, user_id, is_deleted FROM "Email" WHERE email_id = %s'
@@ -143,6 +147,7 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def getEmailWithMostRepliesbyUser(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT e.email_id FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id having count(e.email_id) =( SELECT count(e.email_id) as count FROM EMAILS e inner join reply r on e.email_id = r.original_id group by e.email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
@@ -151,6 +156,7 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def getEmailWithMostReplies(self):
         cursor = self.conn.cursor()
         query = "with most_replies as (select R.original_id from reply as R group by R.original_id having count(R.original_id) = (select count(original_id) as count from reply group by original_id order by count desc limit 1)) select E.email_id,E.date_created,E.subject,E.body from \"Email\" as E,most_replies as mr where E.email_id = mr.original_id;"
@@ -159,6 +165,7 @@ class EmailDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def sendEmail(self, email_id, user_id):
         cursor = self.conn.cursor()
         query = 'with entry as ( insert into receives( is_viewed, is_deleted, category, user_id, email_id ) values (0, 0, \'No Category\', %s, %s) returning email_id ) select user_id, Em.email_id, date_created, subject, body from "Email" as Em, entry as En where Em.email_id = En.email_id;'

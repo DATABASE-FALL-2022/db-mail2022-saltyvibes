@@ -22,6 +22,7 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def TopFiveUserSentEmails(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s), TOPFIVEUSERS AS ( SELECT r.user_id, COUNT(email_id) as count_email FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by r.user_id ORDER BY count_email DESC LIMIT 5 ) SELECT * FROM "User" u natural inner join TOPFIVEUSERS TFU WHERE U.user_id = TFU.user_id'
@@ -30,6 +31,7 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def TopFiveUsersReceivedEmails(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM receives where user_id = 43 ), TOPFIVEUSERS AS ( SELECT em.user_id, COUNT(email_id) as count_email FROM EMAILS e natural inner join "Email" em WHERE e.email_id = em.email_id group by em.user_id ORDER BY count_email DESC LIMIT 5 ) SELECT * FROM "User" u natural inner join TOPFIVEUSERS TFU WHERE U.user_id = TFU.user_id'
@@ -38,6 +40,7 @@ class UserDAO:
         for row in cursor:
             result.append(row)
         return result
+
     def insert(self,name,email_address,password,is_premium,phone,date_of_birth):
         cursor = self.conn.cursor()
         query = 'insert into "User"("name", email_address, "password", is_premium, phone, date_of_birth) values (%s,%s,%s,%s,%s,%s) returning user_id;'
@@ -45,18 +48,21 @@ class UserDAO:
         user_id = cursor.fetchone()[0]
         self.conn.commit()
         return user_id
+
     def update(self,user_id,name,email_address,password,is_premium,phone,date_of_birth):
         cursor = self.conn.cursor()
         query = 'UPDATE "User" SET "name" = %s, email_address = %s, "password" = %s, is_premium = %s, phone = %s, date_of_birth = %s WHERE user_id = %s'
         cursor.execute(query,(name,email_address,password,is_premium,phone,date_of_birth,user_id))
         self.conn.commit()
         return user_id
+
     def delete(self,user_id):
         cursor = self.conn.cursor()
         query = 'with x as (DELETE from "User" where user_id = %s returning user_id) DELETE from "Friends" where friend_id=(select user_id from x) or owner_id = (select user_id from x)'
         cursor.execute(query, (user_id,))
         self.conn.commit()
         return user_id
+
     def getUserbyId(self,user_id):
         cursor = self.conn.cursor()
         query = 'SELECT "name", email_address, "password", is_premium, phone,date_of_birth FROM "User" where user_id = %s'
@@ -106,14 +112,11 @@ class UserDAO:
         print(result)
         return result
 
-
-
     def updateFriend(self,owner_id,friend_id,new_owner_id,new_friend_id):
         cursor = self.conn.cursor()
         query = 'UPDATE "Friends" SET "owner_id" = %s, friend_id = %s WHERE owner_id = %s and friend_id = %s returning owner_id,friend_id'
         cursor.execute(query,(new_owner_id,new_friend_id,owner_id,friend_id))
         self.conn.commit()
-
         return cursor.fetchone()
 
     def updatePassword(self, user_id, password):
