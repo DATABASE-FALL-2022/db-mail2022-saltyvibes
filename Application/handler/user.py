@@ -193,6 +193,18 @@ class UserHandler:
                 result = self.build_user_dict(row)
                 result_list.append(result)
             return jsonify(TopFiveUsers=result_list)
+    def TopFiveUsersReceivedEmails(self,user_id):
+        dao = UserDAO()
+        if not dao.getUserbyId(user_id):
+            return jsonify(Error="User not found"),404
+        else:
+            user_list = dao.TopFiveUsersReceivedEmails(user_id)
+            result_list = []
+            for row in user_list:
+                result = self.build_user_dict(row)
+                result_list.append(result)
+            return jsonify(TopFiveUsers=result_list)
+
     def getFriend(self, form):
         dao = UserDAO()
         if len(form) != 2:
