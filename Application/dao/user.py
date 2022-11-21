@@ -53,7 +53,7 @@ class UserDAO:
         return user_id
     def delete(self,user_id):
         cursor = self.conn.cursor()
-        query = 'DELETE from "User" where user_id = %s'
+        query = 'with x as (DELETE from "User" where user_id = %s returning user_id) DELETE from "Friends" where friend_id=(select user_id from x) or owner_id = (select user_id from x)'
         cursor.execute(query, (user_id,))
         self.conn.commit()
         return user_id

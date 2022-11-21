@@ -90,7 +90,7 @@ class UserHandler:
                 is_premium = form["is_premium"]
                 phone = form["phone"]
                 date_of_birth = form["date_of_birth"]
-                if name and email_address and password and is_premium and phone and date_of_birth:
+                if name and email_address and password and is_premium!=None and phone and date_of_birth:
                     dao.update(user_id,name,email_address,password,is_premium,phone,date_of_birth)
                     result = self.build_user_attributes(user_id,name,email_address,password,is_premium,phone,date_of_birth)
                     return jsonify(Email=result), 200
