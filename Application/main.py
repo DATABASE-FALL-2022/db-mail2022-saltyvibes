@@ -46,6 +46,10 @@ def FillWithDummyData():
 def getInbox(user_id):
     return EmailHandler().getInbox(user_id)
 
+@app.route('/EmailService/inbox/<int:user_id>/deleteemail/<int:email_id>')
+def getInboxdeleteemail(user_id,email_id):
+    return EmailHandler().deleteemailfrominbox(user_id,email_id)
+
 @app.route('/EmailService/inbox/<int:user_id>/filter/<string:category>')
 def getFilteredInbox(user_id,category):
     return EmailHandler().getFilteredInbox(user_id,category)

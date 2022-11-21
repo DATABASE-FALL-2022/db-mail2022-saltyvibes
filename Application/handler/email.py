@@ -162,7 +162,14 @@ class EmailHandler:
                 return jsonify(Reply=result), 201
             else:
                 return jsonify(Error="Unexpected attributes in post request"), 400
-
+    def deleteemailfrominbox(self,user_id,email_id):
+        dao = EmailDAO()
+        if not dao.getEmailbyId(email_id):
+            return jsonify(Error="Email not found"), 404
+        else:
+            dao.deleteemailfrominbox(user_id,email_id)
+            return jsonify(DeleteStatus="OK"), 200
+        pass
     def getEmailbyId(self, email_id):
         dao = EmailDAO()
         row = dao.getEmailbyId(email_id)
@@ -256,13 +263,6 @@ class EmailHandler:
         else:
             return jsonify(Email_With_Most_Replies=result_list)
 
-    # def sendEmail(self, category, user_id, email_ID): #insert into
-    #     cursor = self.conn.cursor()
-    #     query = "insert into receives(category, user_id, email_ID) values (%s, %s, %s) returning email_ID;"
-    #     cursor.execute(query, (category, user_id, email_ID,))
-    #     pid = cursor.fetchone()[0]
-    #     self.conn.commit()
-    #     return email_ID
 
 
     def sendEmail(self, form):  # insert into
