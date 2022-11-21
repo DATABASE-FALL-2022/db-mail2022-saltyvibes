@@ -110,11 +110,11 @@ class UserDAO:
 
     def updateFriend(self,owner_id,friend_id,new_owner_id,new_friend_id):
         cursor = self.conn.cursor()
-        query = 'UPDATE "Friends" SET "owner_id" = %s, friend_id = %s WHERE owner_id = %s and friend_id = %s re'
+        query = 'UPDATE "Friends" SET "owner_id" = %s, friend_id = %s WHERE owner_id = %s and friend_id = %s returning owner_id,friend_id'
         cursor.execute(query,(new_owner_id,new_friend_id,owner_id,friend_id))
         self.conn.commit()
 
-        return new_owner_id,new_friend_id
+        return cursor.fetchone()
 
     def updatePassword(self, user_id, password):
         cursor = self.conn.cursor()

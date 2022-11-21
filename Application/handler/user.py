@@ -173,10 +173,13 @@ class UserHandler:
         new_friend_id = form["new_friend_id"]
         if owner_id and friend_id and  new_friend_id and  new_owner_id:
 
-            if dao.getFriend(owner_id,friend_id):
+            if dao.getFriend(owner_id,friend_id) :
+                if  dao.getUserbyId(new_owner_id) and dao.getUserbyId(new_friend_id):
                     new_Friend = dao.updateFriend(owner_id,friend_id,new_owner_id,new_friend_id)
                     result = self.build_friend_attributes(new_Friend)
                     return jsonify(Friend=result), 200
+                else:
+                    return jsonify(Error="one of the new users does not exist"), 404
             else:
                 return jsonify(Error="Friend not found or does not exist"), 404
         else:
