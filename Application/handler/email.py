@@ -281,6 +281,15 @@ class EmailHandler:
             result_list.append(result)
         return jsonify(Inbox=result_list)
 
+    def getInboxFilteredByEmail(self, ID,email_address):
+        dao = EmailDAO()
+        inbox = dao.getInboxFilteredByEmail(ID,email_address)
+        result_list = []
+        for row in inbox:
+            result = self.build_inbox_dict(row)
+            result_list.append(result)
+        return jsonify(Inbox=result_list)
+
     def getFilteredInbox(self, ID, category):
         dao = EmailDAO()
         inbox = dao.getFilteredInbox(ID, category)
@@ -317,6 +326,15 @@ class EmailHandler:
     def getOutbox(self, ID):
         dao = EmailDAO()
         Outbox = dao.getOutbox(ID)
+        result_list = []
+        for row in Outbox:
+            result = self.build_outbox_dict(row)
+            result_list.append(result)
+        return jsonify(Outbox=result_list)
+
+    def getOutboxFilteredByEmail(self,user_id,email_address):
+        dao = EmailDAO()
+        Outbox = dao.getOutboxFilteredByEmail(user_id,email_address)
         result_list = []
         for row in Outbox:
             result = self.build_outbox_dict(row)
