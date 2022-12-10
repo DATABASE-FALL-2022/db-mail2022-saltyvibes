@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, Divider, Form, Grid, Input, Modal, Segment} from 'semantic-ui-react'
+import {Button, Container, Divider, Form, Grid, Icon, Input, Modal, Segment} from 'semantic-ui-react'
 import {Label} from "recharts";
 import axios from "axios";
 
@@ -16,9 +16,15 @@ function LoadOutbox(handleChange,setButtons){
             const data = response.data;
             const buttonData = data.Outbox.map(item => {
                 if(item.is_friend){
-                    return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if(item.is_reply)
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }else{
-                    return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                    if (item.is_reply)
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} </Button>
+                    else
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
         })
@@ -37,12 +43,21 @@ function LoadInbox(handleChange,setButtons){
             const data = response.data;
             const buttonData = data.Inbox.map(item => {
                 if(item.is_friend&&item.user_id !=0){
-                    return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if(item.is_reply)
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }else if (item.user_id ==0){
-                    return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if (item.is_reply)
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }
                 else{
-                    return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                    if(item.is_reply)
+                        return <Button color='google plus' onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
         })
@@ -62,12 +77,21 @@ function searchInboxByEmailAddress(handleChange,SearchInput,setSearchInput,setBu
             const data = response.data;
             const buttonData = data.Inbox.map(item => {
                 if(item.is_friend&&item.user_id !=0){
-                    return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if(item.is_friend)
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }else if (item.user_id ==0){
-                    return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if (item.is_friend)
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }
                 else{
-                    return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                    if(item.is_friend)
+                        return <Button color='google plus' onClick={handleChange}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
         })
@@ -88,12 +112,21 @@ function searchOutboxByEmailAddress(handleChange,SearchInput,setSearchInput,setB
             const data = response.data;
             const buttonData = data.Outbox.map(item => {
                 if(item.is_friend&&item.user_id !=0){
-                    return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if(item.is_reply)
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}    </Button>
+                    else
+                        return <Button color='teal' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created} </Button>
                 }else if (item.user_id ==0){
-                    return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                    if (item.is_reply)
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject}  <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='orange' onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }
                 else{
-                    return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                    if(item.is_reply)
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <Icon name ='reply' color='black' /> <br/>Date: {item.date_created} </Button>
+                    else
+                        return <Button color='google plus'  onClick={handleChange}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
         })
@@ -168,7 +201,7 @@ function Inbox() {
                         type='text'
                         icon='search'
                         iconPosition='left'
-                        placeholder='Search'
+                        placeholder='Search with email address'
                         onChange={SearchChange}
 
 
