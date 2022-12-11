@@ -10,29 +10,42 @@ import axios from 'axios'
 
 
 
-// User Statistics
+// // User Statistics
 // async function getMostRecipientsUser() {
 //     const state = { recipient: [] }
 //     componentDidMount(){
 //
-//
 //     }
 //
 //
-//     const response = await Axios.get("http://127.0.0.1:5000/EmailService/EmailWithMostRecipients/");
+//     const response = await Axios.get("http://127.0.0.1:5000/EmailService/EmailWithMostRecipientsbyUser/");
 //     console.log(response.data);
 // }
+// "http://127.0.0.1:5000/EmailService/EmailWithMostRecipientsbyUser/"
 
-// "http://127.0.0.1:5000/EmailService/EmailWithMostRecipients/"
 //     function getMostRepliesUser(){}
-//     function getTop5YouSendEmailsTo(){}
-//     function getTop5ThatSendEmailsToYou(){}
-//
+// "http://127.0.0.1:5000/EmailService/EmailWithMostRepliesbyUser/"
+
+//     function getTop5UserSendEmailsTo(){}
+// "http://127.0.0.1:5000/EmailService/TopFiveUsersSentEmails/"
+
+//     function getTop5UserReceivedEmails(){}
+// "http://127.0.0.1:5000/TopFiveUsersReceivedEmails/"
+
+
+
 // // Global Statistics
 //     function getEmailMostRecipientsGlobal(){}
+// "http://127.0.0.1:5000/EmailService/EmailWithMostRecipients"
+
 //     function getMostRecipientsGlobal(){}
+// "http://127.0.0.1:5000/EmailService/EmailWithMostReplies"
+
 //     function getTop10WithMostEmailsInbox(){}
+// "http://127.0.0.1:5000/EmailService/Top10UsersWithMoreEmailsInInbox"
+
 //     function getTop10WithMostEmailsOutbox(){}
+// "http://127.0.0.1:5000/EmailService/ETop10UsersWithMoreEmailsInOutbox"
 
 
 
@@ -49,67 +62,10 @@ function Dashboard() {
         setOpen2(true);
     }
 
-    // const level1Panels = [
-    //     { key: 'panel-1a', title: 'Level 1A', content: 'Level 1A Contents' },
-    //     { key: 'panel-ba', title: 'Level 1B', content: 'Level 1B Contents' },
-    // ]
-    //
-    // const Level1Content = (
-    //     <div>
-    //         Welcome to level 1
-    //         <Accordion.Accordion panels={level1Panels} />
-    //     </div>
-    // )
-    //
-    // const level2Panels = [
-    //     { key: 'panel-2a', title: 'Level 2A', content: 'Level 2A Contents' },
-    //     { key: 'panel-2b', title: 'Level 2B', content: 'Level 2B Contents' },
-    // ]
-    //
-    // const Level2Content = (
-    //     <div>
-    //         Welcome to level 2
-    //         <Accordion.Accordion panels={level2Panels} />
-    //     </div>
-    // )
-    //
-    // const rootPanels = [
-    //     { key: 'panel-1', title: 'Level 1', content: { content: Level1Content } },
-    //     { key: 'panel-2', title: 'Level 2', content: { content: Level2Content } },
-    // ]
-
-    const [cardData, setCardData] = useState([]);
-    const[visible, setVisible] = useState(5);
-
-    const allCardData = async () => {
-        const response = await axios.get("http://127.0.0.1:5000/EmailService/EmailWithMostRecipients/")
-        setCardData(response.data.results)
-    }
-    useEffect( () => {
-        allCardData();
-    }, [])
-
-    const renderCard = (person, index)=>{
-        return (
-            <Card style={ {width: "18rem"} }>
-                <Card.Header>hey</Card.Header>
-                <Card.Content>
-                    This is a card :D
-                </Card.Content>
-            </Card>
-        )
-    }
-
 
     return <Container style={{ height: 800 }}>
-        <Header size='large'>My Dashboard</Header>
 
-        <Accordion>
-            <Accordion.Title>Hi!</Accordion.Title>
-            <Accordion.Content>
-                This is my accordion
-            </Accordion.Content>
-        </Accordion>
+        <Header size='large'>My Dashboard</Header>
 
         {/*User Statistics*/}
         <header>User Statistics</header>
@@ -158,7 +114,6 @@ function Dashboard() {
             <Modal.Content>
                 <Modal.Description>
                     Email with the most recipients:
-
                 </Modal.Description>
 
                 <Modal.Description>
@@ -184,8 +139,6 @@ function Dashboard() {
         // return getMostRecipientsUser();
 
 }
-
-
 
 
 export default Dashboard;
