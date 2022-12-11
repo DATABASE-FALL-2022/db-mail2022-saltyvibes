@@ -83,7 +83,6 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                     if(item.is_reply)
                         return <Button color='google plus' onClick={function(event)
                             {
-                                console.log(item);
                             handlingreadingemail();
                             setUserId(item.user_id);
                             setReadData(item);
@@ -92,7 +91,6 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                     else
                         return <Button color='google plus'  onClick={function(event)
                             {
-                                console.log(item);
                             handlingreadingemail();
                             setUserId(item.user_id);
                             setReadData(item);
@@ -187,7 +185,9 @@ function Inbox() {
     const [reademail,setReadEmail] = useState(false);
     const [anotheremailid,setAnotherEmailid] = useState("");
     console.log(open);
+    console.log("The user id is Inbox:" + user_id)
     const [readdata,setReadData] = useState([])
+    const [replying,setReplying] = useState(false);
     const [MailBox, setMailbox] = useState(0);
     const [buttons, setButtons] = useState([]);
     const [searching, setSearching] = useState(false);
@@ -197,7 +197,7 @@ function Inbox() {
             Count = 0
             Checked=true
         }
-        if(MailBox==1&&Count==0){
+        else if(MailBox==1&&Count==0){
             return LoadOutbox(handlingreadingemail,setButtons)
         }
         else if(MailBox==0&&Count==0){
@@ -378,10 +378,66 @@ function Inbox() {
                         </br>
                         {JSON.stringify(readdata.body)}
                     </Header>
-                    <Button>Reply</Button>
+                    <Button onClick={() => setReplying(true)}>Reply</Button>
                 <Button onClick={() => setReadEmail(false)}>Close</Button>
             </Modal>
             
+            <Modal
+            centered={true}
+                open={replying}
+                dialogClassName="modal-100w"
+                size="large"
+            >
+                <Modal.Header>Creating Email</Modal.Header>
+                <form onSubmit={handleSubmit}>
+                    <label for="date">Date Created:</label>
+                    <br></br>
+                    <input 
+                    type="date" 
+                    id="date_created" 
+                    name="date_created"
+                    onChange={event => setDateCreated(event.target.value)}
+                    value= {date_created}
+                    ></input>
+                    <br></br>
+                    <label for="Subject"> Subject:</label>
+                    <br></br>
+                    <input 
+                    type="text" 
+                    id="subject" 
+                    name="subject"
+                    maxlength="20"
+                    onChange={event => setSubject(event.target.value)}
+                    value= {subject}
+                    ></input>
+                    <br></br>
+                    <label for="Email Address">Email Address:</label>
+                    <br></br>
+                    <input 
+                    type="text" 
+                    id="email_address" 
+                    name="email address"
+                    maxlength="20"
+                    onChange={event => setEmailAddress(event.target.value)}
+                    value= {email_address}
+                    ></input>
+                    <br></br>
+                    <label for="body">Body:</label>
+                    <br></br>
+                    <textarea 
+                    rows="4" 
+                    cols ="50" 
+                    name="body" 
+                    id="body"
+                    maxlength="150"
+                    onChange={event => setBody(event.target.value)}
+                    value= {body}
+                    > Enter text here</textarea>
+                    <br></br>
+                    <input type ="submit"></input>
+                </form>
+            </Modal>
+
             <Label ribbon color="blue" size="large">Support</Label>
             <Grid>
                 <Grid.Column textAlign="Left">
