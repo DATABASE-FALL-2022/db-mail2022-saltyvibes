@@ -3,7 +3,9 @@ import {Button, Card, Container, Divider, Header, Icon, Image, Modal, Tab} from 
 import Dashboard from "./Dashboard";
 import Emails from "./Emails";
 import Account from "./Account";
+import Inbox from "./Inbox";
 
+var U =3
 
 function UserView(){
     const [open, setOpen] = useState(false);
@@ -11,9 +13,11 @@ function UserView(){
 
     const [isAuth, setIsAuth] = useState(true)
     const [notShow, setNotShow] = useState(false)
+
     const panes = [
         {
-            menuItem: 'Inbox', render: () => <Tab.Pane active={isAuth}><Container><Header>Anything you need to put here</Header><Divider/></Container><Emails/></Tab.Pane>
+            menuItem: 'Inbox', render: () => <Tab.Pane active={isAuth}><Inbox/></Tab.Pane>
+
         },
         {
             menuItem: 'Outbox', render: () => <Tab.Pane active={isAuth}><Container><Header>Anything you need to put here</Header><Divider/></Container><Emails/></Tab.Pane>
@@ -25,7 +29,7 @@ function UserView(){
             menuItem: 'Friend List', render: () => <Tab.Pane active={isAuth}> this is my friends list <Dashboard/></Tab.Pane>
         },
         {
-            menuItem: 'Dashboard', render: () => <Tab.Pane active={isAuth}><Dashboard/></Tab.Pane>
+            menuItem: 'Dashboard', render: () => <Tab.Pane active={isAuth}><Dashboard /></Tab.Pane>
         }
     ]
 

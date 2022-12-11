@@ -151,7 +151,7 @@ class UserHandler:
             return jsonify(Error = "User Not Found"), 404
         else:
             result = self.build_user_dict(Users)
-            return jsonify(Get_User_Information_Using_Email_Address=result)
+            return jsonify(User=result)
 
     def addFriend(self, form):
         if len(form) != 2:
