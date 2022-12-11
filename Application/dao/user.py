@@ -34,7 +34,7 @@ class UserDAO:
 
     def TopFiveUsersReceivedEmails(self,user_id):
         cursor = self.conn.cursor()
-        query = 'WITH EMAILS AS ( SELECT email_id FROM receives where user_id = 43 ), TOPFIVEUSERS AS ( SELECT em.user_id, COUNT(email_id) as count_email FROM EMAILS e natural inner join "Email" em WHERE e.email_id = em.email_id group by em.user_id ORDER BY count_email DESC LIMIT 5 ) SELECT * FROM "User" u natural inner join TOPFIVEUSERS TFU WHERE U.user_id = TFU.user_id'
+        query = 'WITH EMAILS AS ( SELECT email_id FROM receives where user_id = %s ), TOPFIVEUSERS AS ( SELECT em.user_id, COUNT(email_id) as count_email FROM EMAILS e natural inner join "Email" em WHERE e.email_id = em.email_id group by em.user_id ORDER BY count_email DESC LIMIT 5 ) SELECT * FROM "User" u natural inner join TOPFIVEUSERS TFU WHERE U.user_id = TFU.user_id'
         cursor.execute(query, (user_id,))
         result = []
         for row in cursor:

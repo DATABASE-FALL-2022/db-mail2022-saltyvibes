@@ -196,6 +196,7 @@ function Inbox() {
          }
         else if(MailBox==1&&SearchInput!=""){
             return searchOutboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInput,setButtons)
+
         }
 
 
@@ -429,6 +430,7 @@ try{
                     id="email_address" 
                     name="email address"
                     maxlength="20"
+
                     onChange={event => setEmailAddress(event.target.value)}
                     value= {email_address}
                     ></input>

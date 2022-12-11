@@ -32,7 +32,7 @@ class UserHandler:
         for row in user_list:
             result = self.build_user_dict(row)
             result_list.append(result)
-        return jsonify(Users=result_list)
+        return jsonify(User=result_list)
 
     def build_get_userid_attributes(self,user_id,row):
         result = {}
@@ -74,10 +74,10 @@ class UserHandler:
         row = dao.getUserbyId(user_id)
         if not row:
             print(user_id)
-            return jsonify(Error="Email Not Found"), 404
+            return jsonify(User="User Not Found"), 404
         else:
             email = self.build_get_userid_attributes(user_id, row)
-            return jsonify(Email=email)
+            return jsonify(User=email)
 
     def updateUser(self,user_id,form):
         dao = UserDAO()
@@ -96,7 +96,7 @@ class UserHandler:
                 if name and email_address and password and is_premium!=None and phone and date_of_birth:
                     dao.update(user_id,name,email_address,password,is_premium,phone,date_of_birth)
                     result = self.build_user_attributes(user_id,name,email_address,password,is_premium,phone,date_of_birth)
-                    return jsonify(Email=result), 200
+                    return jsonify(User=result), 200
                 else:
                     return jsonify(Error="Unexpected attributes in update request"),400
 
@@ -133,7 +133,7 @@ class UserHandler:
         for row in Users:
             result = self.build_user_dict(row)
             result_list.append(result)
-        return jsonify(Top_10_Users_With_More_Emails_In_Inbox=result_list)
+        return jsonify(User=result_list)
 
     def getTop10UsersOutbox(self):
         dao = UserDAO()
@@ -142,7 +142,7 @@ class UserHandler:
         for row in Users:
             result = self.build_user_dict(row)
             result_list.append(result)
-        return jsonify(Top_10_Users_With_More_Emails_In_Outbox=result_list)
+        return jsonify(User=result_list)
 
     def getUserInfoByEmail(self, email_address):
         dao = UserDAO()
@@ -201,7 +201,7 @@ class UserHandler:
             for row in user_list:
                 result = self.build_user_dict(row)
                 result_list.append(result)
-            return jsonify(TopFiveUsers=result_list)
+            return jsonify(User=result_list)
 
     def TopFiveUsersReceivedEmails(self,user_id):
         dao = UserDAO()
@@ -213,7 +213,7 @@ class UserHandler:
             for row in user_list:
                 result = self.build_user_dict(row)
                 result_list.append(result)
-            return jsonify(TopFiveUsers=result_list)
+            return jsonify(User=result_list)
 
     def getFriend(self, form):
         dao = UserDAO()

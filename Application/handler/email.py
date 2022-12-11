@@ -307,9 +307,9 @@ class EmailHandler:
             result = self.build_email_dict_nousr(row)
             result_list.append(result)
         if len(result_list) > 1:
-            return jsonify(Email_With_Most_Recipients_Tied=result_list)
+            return jsonify(Email=result_list)
         else:
-            return jsonify(Email_With_Most_Recipients=result_list)
+            return jsonify(Email=result_list)
 
     def getEmailWithMostRepliesbyUser(self, user_id):
         dao = EmailDAO()
@@ -319,9 +319,9 @@ class EmailHandler:
             result = self.build_email_dict_nousr(row)
             result_list.append(result)
         if len(result_list) > 1:
-            return jsonify(Email_With_Most_Replies_Tied=result_list)
+            return jsonify(Email=result_list)
         else:
-            return jsonify(Email_With_Most_Replies=result_list)
+            return jsonify(Email=result_list)
 
     def getOutbox(self, ID):
         dao = EmailDAO()
@@ -348,7 +348,7 @@ class EmailHandler:
         for row in email_from_user:
             result = self.build_email_dict(row)
             result_list.append(result)
-        return jsonify(EmailFromUser=result_list)
+        return jsonify(Email=result_list)
 
     def getEmailWithMostRecipients(self):
         dao = EmailDAO()
@@ -358,9 +358,10 @@ class EmailHandler:
             result = self.build_email_dict_nousr(row)
             result_list.append(result)
         if len(result_list) > 1:
-            return jsonify(Email_With_Most_Recipients_Tied=result_list)
+
+            return jsonify(Email=result_list)
         else:
-            return jsonify(Email_With_Most_Recipients=result_list)
+            return jsonify(Email=result_list)
 
     def getEmailWithMostReplies(self):
         dao = EmailDAO()
@@ -370,9 +371,9 @@ class EmailHandler:
             result = self.build_email_dict_nousr(row)
             result_list.append(result)
         if len(result_list) > 1:
-            return jsonify(Email_With_Most_Replies_Tied=result_list)
+            return jsonify(Email=result_list)
         else:
-            return jsonify(Email_With_Most_Replies=result_list)
+            return jsonify(Email=result_list)
 
     def sendEmail(self, form):
         dao = EmailDAO()
@@ -384,7 +385,7 @@ class EmailHandler:
             if dao.getEmailbyId(email_id):
                 receive = dao.sendEmail(email_id, user_id)
                 result = self.build_email_dict(receive)
-                return jsonify(EmailFromUser=result)
+                return jsonify(Email=result)
             else:
                 return jsonify(Error="Email not found or doesn't exist"), 404
         else:
@@ -400,7 +401,7 @@ class EmailHandler:
             if dao.getEmailbyId(email_id):
                 receive = dao.unsendEmail(email_id,user_id)
                 result = self.build_email_dict(receive)
-                return jsonify(EmailFromUser=result)
+                return jsonify(Email=result)
             else:
                 return jsonify(Error="Email not found or doesn't exist"), 404
         else:
@@ -446,7 +447,7 @@ class EmailHandler:
         if user_id and email_id:
             receive = dao.getReceive(user_id, email_id)
             result = self.build_receives_dict(receive)
-            return jsonify(EmailFromUser=result)
+            return jsonify(Email=result)
         else:
             return jsonify(Error="Unexpected attributes in update request"), 400
 
@@ -459,7 +460,7 @@ class EmailHandler:
         if user_id and email_id:
             receive = dao.ReadEmailFromUser(user_id, email_id)
             result = self.build_email_dict(receive)
-            return jsonify(EmailRead=result)
+            return jsonify(Email=result)
         else:
             return jsonify(Error="Unexpected attributes in request"), 400
 
