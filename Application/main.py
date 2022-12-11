@@ -118,6 +118,7 @@ def getAllUsers():
 def getUserByID(user_id):
 
     if request.method == "GET":
+        print(user_id)
         return UserHandler().getUserbyId(user_id)
     elif request.method == "PUT":
         return UserHandler().updateUser(user_id,request.json)
@@ -162,9 +163,9 @@ def createReceive():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
-@app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address>')
-def getUserInfoByEmail():
-    return UserHandler().getUserInfoByEmail()
+@app.route('/EmailService/GetUserInformationUsingEmailAddress/<string:email_address>')
+def getUserInfoByEmail(email_address):
+    return UserHandler().getUserInfoByEmail(email_address)
 
 @app.route('/EmailService/Friend',methods=['POST','GET','PUT',"DELETE"])
 def Friend():

@@ -73,6 +73,7 @@ class UserHandler:
         dao = UserDAO()
         row = dao.getUserbyId(user_id)
         if not row:
+            print(user_id)
             return jsonify(Error="Email Not Found"), 404
         else:
             email = self.build_get_userid_attributes(user_id, row)
@@ -145,7 +146,7 @@ class UserHandler:
 
     def getUserInfoByEmail(self, email_address):
         dao = UserDAO()
-        Users = dao.getUserInfoByEmail()
+        Users = dao.getUserInfoByEmail(email_address)
         if not Users:
             return jsonify(Error = "User Not Found"), 404
         else:
