@@ -7,6 +7,9 @@ import HomePage from "./HomePage";
 import Inbox from "./Inbox";
 import UserView from "./UserView";
 import Dashboard from "./Dashboard";
+import Login from "./Login";
+import Register from "./Register";
+import ViewFriends from "./ViewFriends";
 
 
 const root = ReactDOM.createRoot( document.getElementById('root') );
@@ -17,6 +20,9 @@ root.render(
             <Route exact path="/Home" element={<HomePage/>} />
             <Route exact path="/UserView" element={<UserView/>} />
             <Route exact path="/Dashboard" element={<Dashboard/>} />
+            <Route exact path="/Login" element={<Login/>} />
+            <Route exact path="/Register" element={<Register/>} />
+            <Route exact path="/ViewFriends" element={<ViewFriends/>} />
         </Routes>
     </BrowserRouter>
 );

@@ -629,6 +629,58 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GetInboxFilteredByEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/EmailService/inbox/3/email_address/sup",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"EmailService",
+								"inbox",
+								"3",
+								"email_address",
+								"sup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOutboxFilteredByEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/EmailService/outbox/3/email_address/Tir",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"EmailService",
+								"outbox",
+								"3",
+								"email_address",
+								"Tir"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

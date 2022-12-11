@@ -97,6 +97,16 @@ class EmailDAO:
             result.append(row)
         return result
 
+    def getInboxFilteredByEmail(self,ID,email_address):
+        cursor = self.conn.cursor()
+        email_address = '%'+email_address+'%'
+        query = 'with inbox as ( select E.user_id, E.email_id, E.date_created, E.subject, E.body, R.category from ( receives as R join "Email" as E on E.email_id = R.email_id ) where R.user_id = %s and R.is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ), x as ( select user_id, email_id, date_created, subject, body, category, Rep.reply_id from inbox as I left outer join replyIDs as Rep on email_id = Rep.reply_id order by date_created desc ) select user_id, email_id, date_created, subject, body, category, reply_id,friend_id from (x left outer join "Friends" as F on x.user_id = F.friend_id) natural inner join "User" where email_address LIKE %s ;'
+        cursor.execute(query,(ID,email_address,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     def getEmailWithMostRecipientsbyUser(self,user_id):
         cursor = self.conn.cursor()
         query = 'WITH EMAILS AS ( SELECT email_id FROM "Email" where user_id = %s ), Recipients_Count AS ( SELECT email_id FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id having count(email_id) =( SELECT count(email_id) as count FROM EMAILS e natural inner join receives r WHERE e.email_id = r.email_id group by email_id order by count desc limit 1 ) ) SELECT * FROM "Email" e natural inner join Recipients_Count rc WHERE e.email_id = rc.email_id'
@@ -110,6 +120,16 @@ class EmailDAO:
         cursor = self.conn.cursor()
         query = 'with outbox as ( select user_id, email_id, date_created, subject, body from "Email" where user_id = %s and is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ) select user_id, email_id, date_created, subject, body, Rep.reply_id from Outbox as O left outer join replyIDs as Rep on email_id = Rep.reply_id order by date_created desc;'
         cursor.execute(query,(ID,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
+    def getOutboxFilteredByEmail(self,user_id,email_address):
+        cursor = self.conn.cursor()
+        email_address = '%'+email_address+'%'
+        query = 'with outbox as ( select user_id, email_id, date_created, subject, body from "Email" where user_id = %s and is_deleted != 1 ), replyIDs as ( select distinct reply_id from reply ), items as ( select user_id, email_id, date_created, subject, body, Rep.reply_id from Outbox as O left outer join replyIDs as Rep on email_id = Rep.reply_id order by date_created desc ) Select R.user_id, I.email_id, date_created, subject, body, reply_id from items as I, receives as R where I.email_id in ( select I.email_id from "User" as U where I.email_id = R.email_id and U.user_id = R.user_id and U.email_address LIKE %s );'
+        cursor.execute(query,(user_id,email_address,))
         result = []
         for row in cursor:
             result.append(row)

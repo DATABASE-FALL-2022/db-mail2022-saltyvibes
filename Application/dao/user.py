@@ -90,7 +90,7 @@ class UserDAO:
 
     def getUserInfoByEmail(self, email_address):
         cursor = self.conn.cursor()
-        query = "Select * from User where email_address = %s;"
+        query = 'Select * from "User" where email_address = %s;'
         cursor.execute(query, (email_address,))
         result = cursor.fetchone()
         return result

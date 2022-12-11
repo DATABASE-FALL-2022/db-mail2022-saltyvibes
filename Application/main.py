@@ -44,6 +44,10 @@ def FillWithDummyData():
 def getInbox(user_id):
     return EmailHandler().getInbox(user_id)
 
+@app.route('/EmailService/inbox/<int:user_id>/email_address/<string:email_address>')
+def getInboxFilteredByEmail(user_id,email_address):
+    return EmailHandler().getInboxFilteredByEmail(user_id,email_address)
+
 @app.route('/EmailService/inbox/<int:user_id>/deleteemail/<int:email_id>')
 def getInboxdeleteemail(user_id,email_id):
     return EmailHandler().deleteemailfrominbox(user_id,email_id)
@@ -55,6 +59,10 @@ def getFilteredInbox(user_id,category):
 @app.route('/EmailService/outbox/<int:user_id>')
 def getOutbox(user_id):
     return EmailHandler().getOutbox(user_id)
+
+@app.route('/EmailService/outbox/<int:user_id>/email_address/<string:email_address>')
+def getOutboxFilteredByEmail(user_id,email_address):
+    return EmailHandler().getOutboxFilteredByEmail(user_id,email_address)
 
 @app.route('/EmailService/outbox/<int:user_id>/deleteemail/<int:email_id>')
 def deleteemailfromoutbox(user_id,email_id):
@@ -110,6 +118,7 @@ def getAllUsers():
 def getUserByID(user_id):
 
     if request.method == "GET":
+        print(user_id)
         return UserHandler().getUserbyId(user_id)
     elif request.method == "PUT":
         return UserHandler().updateUser(user_id,request.json)
@@ -154,9 +163,9 @@ def createReceive():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
-@app.route('/EmailService/GetUserInformationUsingEmailAddress/<int:email_address>')
-def getUserInfoByEmail():
-    return UserHandler().getUserInfoByEmail()
+@app.route('/EmailService/GetUserInformationUsingEmailAddress/<string:email_address>')
+def getUserInfoByEmail(email_address):
+    return UserHandler().getUserInfoByEmail(email_address)
 
 @app.route('/EmailService/Friend',methods=['POST','GET','PUT',"DELETE"])
 def Friend():
