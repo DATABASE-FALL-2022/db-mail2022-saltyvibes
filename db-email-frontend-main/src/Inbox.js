@@ -179,19 +179,7 @@ function searchOutboxByEmailAddress(handlingreadingemail,SearchInput,setSearchIn
 
 
 function Inbox() {
-    const [open, setOpen] = useState(false);
-    const [show,setShow] = useState(false);
-    const [user_id,setUserId] = useState("");
-    const [reademail,setReadEmail] = useState(false);
-    const [anotheremailid,setAnotherEmailid] = useState("");
-    console.log(open);
-    console.log("The user id is Inbox:" + user_id)
-    const [readdata,setReadData] = useState([])
-    const [replying,setReplying] = useState(false);
-    const [MailBox, setMailbox] = useState(0);
-    const [buttons, setButtons] = useState([]);
-    const [searching, setSearching] = useState(false);
-    const [SearchInput, setSearchInput] = useState("");
+
     useEffect(() => {
         if(SearchInput.length === 0&&Checked==false){
             Count = 0
@@ -226,10 +214,6 @@ function Inbox() {
         Checked=false
         setSearchInput(e.target.value);
     };
-    const[date_created,setDateCreated] = useState("");
-    const[subject,setSubject] = useState("");
-    const[email_address,setEmailAddress] = useState("");
-    const[body,setBody] = useState("");
 
     const getEmailbyID = event => {
         console.log('Getting Email Address');
@@ -293,8 +277,121 @@ function Inbox() {
         setBody('');
 
       };
-    
+
+    const createFriend = event => {
+        {
+            event.preventDefault(); // 👈️ prevent page refresh
+            console.log('Entered method createFriend:');
+            console.log('Getting user id from email address: '+ FriendEmail);
+
+            axios.get('http://127.0.0.1:5000/EmailService/GetUserInformationUsingEmailAddress/'+FriendEmail).
+            then(function(response) {
+                const email_address_response_data = response.data
+                const Friend_id = email_address_response_data.Get_User_Information_Using_Email_Address.user_id
+                axios.get('http://127.0.0.1:5000/EmailService/Friend/'+User+'/'+Friend_id)
+                    .then(function(response){
+                        console.log("Friend does exist")
+                    })
+                    .catch(function(error){//!Be careful, this can catch a false positive
+                        console.log("Friend does not exist, we can add a friend")
+                        console.log('Adding Friend');
+                        console.log("This is the user id:  " + User)
+                        console.log("This is the friend id:" + parseInt(Friend_id))
+                        axios.post('http://127.0.0.1:5000/EmailService/Friend',{
+                            owner_id:User,
+                            friend_id:Friend_id
+                        })
+                            .then(function(response){
+                                const friend_response_data = response.data
+
+                                const user_email_address = friend_response_data.Friend.owner_id
+                                console.log("Created new Friend ")
+                                setEmailAddress(user_email_address)
+                            })
+                            .catch(function(error){
+                                console.log("Error while creating friend")
+                                //console.log(error)
+                            });
+                    });
+                })
+                .catch(function(error){
+                    console.log("User not Found")
+                    //console.log(error)
+                });
+
+
+        }
+
+    }
+    // A
+    const [AddFriend, setAddFriend] = useState(false);
+    // B
+    const[body,setBody] = useState("");
+    const [buttons, setButtons] = useState([]);
+    // D
+    const[date_created,setDateCreated] = useState("");
+    // E
+    const[email_address,setEmailAddress] = useState("");
+    // F
+    const[FriendEmail,setFriendEmail] = useState("");
+    // M
+    const [MailBox, setMailbox] = useState(0);
+    // O
+    const [open, setOpen] = useState(false);
+    // R
+    const [readdata,setReadData] = useState([])
+    const [reademail,setReadEmail] = useState(false);
+    const [replying,setReplying] = useState(false);
+    // S
+    const [SearchInput, setSearchInput] = useState("");
+    const [show,setShow] = useState(false);
+    const[subject,setSubject] = useState("");
+    // U
+    const [user_id,setUserId] = useState("");
+
+    console.log(open);
+    console.log("The user id is Inbox:" + user_id)
+
+
+
+
+
+
+
+
+try{
     return (<Segment>
+            <Modal
+                centered={true}
+                open={AddFriend}
+                dialogClassName="modal-100w"
+                size="large"
+            >
+                <Modal.Header>Adding Friend:</Modal.Header>
+                <form onSubmit={createFriend}>
+                    <label for="email_address">Friend Email:</label>
+                    <br></br>
+                    <input
+                        type="text"
+                        id="email_address"
+                        name="email_address"
+                        onChange={event => setFriendEmail(event.target.value)}
+                        value= {FriendEmail}
+                    ></input>
+                    <br></br>
+                    <input type ="submit"></input>
+                </form>
+
+                <Button onClick={() => setAddFriend(false)}>Close</Button>
+            </Modal>
+
+
+
+
+
+
+
+            {/*Create Email*/}
             <Modal
                 centered={true}
                 open={show}
@@ -302,6 +399,7 @@ function Inbox() {
                 size="large"
             >
                 <Modal.Header>Creating Email</Modal.Header>
+
                 <form onSubmit={handleSubmit}>
                     <label for="date">Date Created:</label>
                     <br></br>
@@ -450,7 +548,8 @@ function Inbox() {
                     />
                     <Button onClick={() => (Count = 0,setMailbox(0))}>Inbox</Button>
                     <Button onClick={() => (Count = 0,setMailbox(1))}>Outbox</Button>
-                    <Button onClick={handlingcreatechange}>Create Email</Button> 
+                    <Button onClick={handlingcreatechange}>Create Email</Button>
+                    <Button onClick={() =>setAddFriend(true)}>AddFriend</Button>
                 </Grid.Column>
 
             </Grid>
@@ -461,6 +560,10 @@ function Inbox() {
 
         </Segment>
 
-    )
+    )}
+    catch (error){
+        console.log(error)
+    }
+
 }
 export default Inbox

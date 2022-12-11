@@ -17,3 +17,9 @@ Application/dao/__pycache__/user.cpython-311.pyc
 *.pyc
 *.pyc
 *.pyc
+Application/.idea/misc.xml
+Application/.idea/Application.iml
+Application/.idea/workspace.xml
+Application/handler/__pycache__/email.cpython-311.pyc
+Application/dao/__pycache__/user.cpython-311.pyc
+Application/handler/__pycache__/user.cpython-311.pyc

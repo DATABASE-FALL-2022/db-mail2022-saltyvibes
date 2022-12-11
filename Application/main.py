@@ -180,6 +180,11 @@ def Friend():
     else:
         return jsonify(Error = "Method not allowed"), 405
 
+@app.route('/EmailService/Friend/<int:owner_id>/<int:friend_id>')
+def getSpecificFriend(owner_id,friend_id):
+        return UserHandler().getSpecificFriend(owner_id,friend_id)
+
+
 
 if __name__ == '__main__':
     app.run()

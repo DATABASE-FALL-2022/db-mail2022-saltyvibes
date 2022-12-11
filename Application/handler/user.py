@@ -155,6 +155,7 @@ class UserHandler:
 
     def addFriend(self, form):
         if len(form) != 2:
+            print(form)
             return jsonify(Error="Malformed post request"), 400
         else:
             owner_id = form['owner_id']
@@ -163,8 +164,9 @@ class UserHandler:
                 dao = UserDAO()
                 owner_id = dao.addFriend(owner_id, friend_id)
                 result = self.build_friend_attributes2(owner_id, friend_id)
-                return jsonify(User=result), 201
+                return jsonify(Friend=result), 201
             else:
+                print(form)
                 return jsonify(Error="Unexpected attributes in post request"), 400
 
     def updateFriend(self,form):
@@ -229,7 +231,23 @@ class UserHandler:
             for row in Friends:
                 result = self.build_user_dict(row)
                 result_list.append(result)
-            return jsonify(Owner_and_Friend=result_list)
+            return jsonify(Friend=result_list)
+
+    def getSpecificFriend(self, owner_id,friend_id):
+            dao = UserDAO()
+            if not(owner_id or friend_id):
+                return jsonify(Error="Malformed update request"), 400
+            else:
+                Friends = dao.getFriend(owner_id, friend_id)
+            if not Friends:
+                return jsonify(Error="Friend Not Found"), 404
+            else:
+                result_list = []
+                print(Friends)
+                for row in Friends:
+                    result = self.build_user_dict(row)
+                    result_list.append(result)
+                return jsonify(Friend=result_list)
 
     def removeFriend(self, form):
         dao = UserDAO()
