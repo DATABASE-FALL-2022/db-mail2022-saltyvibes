@@ -8,9 +8,6 @@ import Account from "./Account";
 function UserView(){
     const [open, setOpen] = useState(false);
     console.log(open);
-    const handleChange = (event, newValue) => {
-        setOpen(true);
-    }
 
     const [isAuth, setIsAuth] = useState(true)
     const [notShow, setNotShow] = useState(false)
