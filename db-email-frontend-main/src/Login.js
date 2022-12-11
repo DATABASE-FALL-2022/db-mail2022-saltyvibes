@@ -17,7 +17,7 @@ function AttemptAccess(Email,Password,setPressed,ChangeView){
         if(AccountPassword==Password){
             console.log("Log in succesful")
 
-            ChangeView('./UserView')
+            ChangeView('/UserView')
         }
         else{
             console.log("Log in unsuccesful")
