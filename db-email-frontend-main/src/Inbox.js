@@ -382,6 +382,22 @@ function Inbox() {
         })
 
     }
+    const handleSubmitDeleteOutbox = event => {
+        console.log('handleSubmitDeleteOutbox ran');
+        event.preventDefault();
+        axios.put('http://127.0.0.1:5000/EmailService/email/' + readdata.email_ID, {
+            date_created: readdata.date_created,
+            subject: readdata.subject,
+            body: readdata.body,
+            user_id: readdata.user_id,
+            is_deleted: 1 
+
+        }).then(function(response){
+            console.log("Finished Deleting Outbox Email")
+        }).catch(function(error){
+            console.log(error)
+        })
+    }
     const handleSubmitchangecategory = event => {
         console.log('handleSubmitchangecategory ran');
         console.log("this is viewed:" + readdata.is_viewed)
@@ -461,6 +477,7 @@ function Inbox() {
     // D
     const[date_created,setDateCreated] = useState("");
     const[deleting,setDeleting] = useState("");
+    const[deletingoutbox,setDeletingOutbox] = useState(false);
     // E
     const[email_address,setEmailAddress] = useState("");
     const[email_id,setEmailId] = useState(""); 
@@ -484,7 +501,6 @@ function Inbox() {
 
     console.log(open);
     console.log("The user id is Inbox:" + user_id)
-
 
 
 
@@ -593,7 +609,7 @@ try{
                         Deleting Email
                     </Header>
             <Button onClick={handleSubmitDelete}>Hit here to delete</Button>
-            <Button onClick={() => (setDeleting(false),setReadEmail(false))}>Close</Button>
+            <Button onClick={() => (setDeleting(false),setReadEmail(false),Done = false)}>Close</Button>
             </Modal>
             {/*Read Email*/}
             <Modal
@@ -697,9 +713,21 @@ try{
                         </br>
                         {JSON.stringify(readdata.body)}
                     </Header>
+                    <Button onClick={() => setDeletingOutbox(true) }>Delete </Button>
                     <Button onClick={() => setReplying(true)}>Reply</Button>
                 <Button onClick={() => setReadEmailOutbox(false)}>Close</Button>
-
+            </Modal>
+            <Modal
+            centered={true}
+            open={deletingoutbox}
+            dialogClassName="modal-100w"
+            size="large"
+            >
+                <Header as="h1" color='blue'>
+                        Deleting Email
+                    </Header>
+            <Button onClick={handleSubmitDeleteOutbox}>Hit here to delete</Button>
+            <Button onClick={() =>(setDeletingOutbox(false),setReadEmailOutbox(false),Done = false)}>Close</Button>
             </Modal>
 
 
