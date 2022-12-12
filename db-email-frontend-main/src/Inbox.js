@@ -69,7 +69,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             getEmailbyID();
                         }
                         }
-                          >Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                          >Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='teal' onClick={function(event)
                             {
@@ -79,7 +79,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }else if (item.user_id ==0){
                     if (item.is_reply)
                         return <Button color='orange' onClick={function(event)
@@ -90,7 +90,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='orange' onClick={function(event)
                             {
@@ -100,7 +100,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setEmailId(item.email_ID)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }
                 else{
                     if(item.is_reply)
@@ -112,7 +112,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
                             {
@@ -122,7 +122,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>}
             });
             setButtons(buttonData);
             Count=1;
@@ -309,11 +309,15 @@ function Inbox() {
         Checked=false
         setSearchInput(e.target.value);
     };
+    const handlingchangecategory = (event,newValue) => {
+        setChangeCategory(true);
+    }
 
     const getEmailbyID = event => {
+        //Bug where you have to hit email two times for the right email address to appear
         console.log('Getting Email Address');
-        console.log("This is the user id:" + parseInt(user_id))
-        axios.get('http://127.0.0.1:5000/EmailService/users/'+user_id)
+        console.log("This is the user id:" + parseInt(readdata.user_id))
+        axios.get('http://127.0.0.1:5000/EmailService/users/'+readdata.user_id)
         .then(function(response){
             const email_address_response_data = response.data
             const user_email_address = email_address_response_data.User.email_address
@@ -326,9 +330,6 @@ function Inbox() {
     };
     const handleSubmitReply = event => {
         console.log('handleSubmitreply ran');
-        console.log(date_created);
-        console.log(subject);
-        console.log(body)
         event.preventDefault(); // 👈️ prevent page refresh
         axios.post('http://127.0.0.1:5000/EmailService/reply', {
             date_created: date_created,
@@ -353,6 +354,28 @@ function Inbox() {
         setEmailId('');
         setBody('');
 
+    }
+
+    const handleSubmitchangecategory = event => {
+        console.log('handleSubmitchangecategory ran');
+        console.log("this is viewed:" + readdata.is_viewed)
+        event.preventDefault(); // 👈️ prevent page refresh
+        axios.put('http://127.0.0.1:5000/EmailService/receive', {
+            user_id : User,
+            email_id : readdata.email_ID,
+            new_user_id : User,
+            new_email_id : readdata.email_ID,
+            is_viewed : 0,
+            is_deleted : 0,
+            category : category 
+
+        }).then(function(response){
+
+        }).catch(function(error){
+            console.log(error)
+        })
+        console.log("category is:" + category)
+        setCategory(''); 
     }
     const handleSubmit = event => {
         console.log('handleSubmit ran');
@@ -451,6 +474,9 @@ function Inbox() {
     // B
     const[body,setBody] = useState("");
     const [buttons, setButtons] = useState([]);
+    //C 
+    const [category,setCategory] = useState("");
+    const [changeCategory,setChangeCategory] = useState(false);
     // D
     const[date_created,setDateCreated] = useState("");
     // E
@@ -512,7 +538,28 @@ try{
 
 
 
-
+            <Modal
+            centered={true}
+            open={changeCategory}
+            dialogClassName="modal-100w"
+            size="large"
+            >
+            <Modal.Header> Change Category </Modal.Header>
+                <form onSubmit={handleSubmitchangecategory}>
+                    <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    placeholder="New Category"
+                    maxlength="20"
+                    onChange={event => setCategory(event.target.value)}
+                    value = {category}
+                    >
+                    </input>
+                    <input type ="submit"></input>
+                </form>
+                <Button onClick={() => setChangeCategory(false) }>Close</Button>
+            </Modal>
 
 
 
@@ -586,6 +633,9 @@ try{
                     <Header as="h1" color='blue'>
                         Subject: {JSON.stringify(readdata.subject)}
                     </Header>
+                    <Header as="h1" color='blue'>
+                        Category: <br></br> {JSON.stringify(readdata.category)}
+                    </Header>
                     <Header as="h1">
                         From
                          <br>
@@ -604,6 +654,7 @@ try{
                     </Header>
                     <Button onClick={() => setReplying(true)}>Reply</Button>
                 <Button onClick={() => setReadEmail(false)}>Close</Button>
+                <Button onClick={() => setChangeCategory(true)}>Change Category</Button>
             </Modal>
             {/*Reply Email*/}
             <Modal

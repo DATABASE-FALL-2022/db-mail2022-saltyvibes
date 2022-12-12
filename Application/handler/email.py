@@ -411,6 +411,7 @@ class EmailHandler:
     def updateReceives(self,form):
         dao = EmailDAO()
         userdao = UserDAO()
+        print(form)
         if len(form) != 7:
             return jsonify(Error="Malformed update request"), 400
         user_id = form["user_id"]
