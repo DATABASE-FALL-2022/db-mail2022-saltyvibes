@@ -163,6 +163,13 @@ def createReceive():
         return EmailHandler().unsendEmail(request.json)
     else:
         return jsonify(Error = "Method not allowed"), 405
+@app.route('/EmailService/receive/<int:user_id>/<int:email_id>', methods=['GET','PUT','DELETE'])
+def getReceivebyId(user_id,email_id):
+
+    if request.method == 'GET':
+        return EmailHandler().getReceivebyID(user_id,email_id)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
 
 @app.route('/EmailService/GetUserInformationUsingEmailAddress/<string:email_address>')
 def getUserInfoByEmail(email_address):
