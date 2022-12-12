@@ -355,7 +355,25 @@ function Inbox() {
         setBody('');
 
     }
+    const handleSubmitDelete = event => {
+        console.log('handleSubmitDelete ran');
+        event.preventDefault();
+        axios.put('http://127.0.0.1:5000/EmailService/receive', {
+            user_id : User,
+            email_id : readdata.email_ID,
+            new_user_id : User,
+            new_email_id : readdata.email_ID,
+            is_viewed : 0,
+            is_deleted : 1,
+            category : readdata.category
 
+        }).then(function(response){
+
+        }).catch(function(error){
+            console.log(error)
+        })
+
+    }
     const handleSubmitchangecategory = event => {
         console.log('handleSubmitchangecategory ran');
         console.log("this is viewed:" + readdata.is_viewed)
@@ -479,6 +497,7 @@ function Inbox() {
     const [changeCategory,setChangeCategory] = useState(false);
     // D
     const[date_created,setDateCreated] = useState("");
+    const[deleting,setDeleting] = useState("");
     // E
     const[email_address,setEmailAddress] = useState("");
     const[email_id,setEmailId] = useState(""); 
@@ -623,6 +642,19 @@ try{
 
                 <Button onClick={() => setShow(false)}>Close</Button>
             </Modal>
+            
+            <Modal
+            centered={true}
+            open={deleting}
+            dialogClassName="modal-100w"
+            size="large"
+            >
+                <Header as="h1" color='blue'>
+                        Deleting Email
+                    </Header>
+            <Button onClick={handleSubmitDelete}>Hit here to delete</Button>
+            <Button onClick={() => (setDeleting(false),setReadEmail(false))}>Close</Button>
+            </Modal>
             {/*Read Email*/}
             <Modal
             centered={true}
@@ -655,7 +687,9 @@ try{
                     <Button onClick={() => setReplying(true)}>Reply</Button>
                 <Button onClick={() => setReadEmail(false)}>Close</Button>
                 <Button onClick={() => setChangeCategory(true)}>Change Category</Button>
+                <Button onClick={() => setDeleting(true)}>Delete</Button>
             </Modal>
+
             {/*Reply Email*/}
             <Modal
             centered={true}
