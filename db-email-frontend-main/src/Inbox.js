@@ -8,6 +8,8 @@ var User;
 var Count = 0;
 var Checked = true; 
 var Done = false; 
+var is_premium;
+var currentuserid; 
 function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
     console.log("I have entered the Outbox");
     Count=1;
@@ -68,6 +70,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }
                         }
@@ -80,6 +83,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }else if (item.user_id ==0){
@@ -91,6 +95,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
@@ -101,6 +106,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setUserId(item.user_id);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }
@@ -113,6 +119,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
@@ -123,6 +130,7 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>}
             });
@@ -152,6 +160,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
                     else
@@ -161,6 +170,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }else if (item.user_id ==0){
@@ -171,6 +181,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
                     else
@@ -180,6 +191,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }
@@ -191,6 +203,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
                     else
@@ -200,6 +213,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setUserId(item.user_id);
                             setReadData(item);
                             setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
@@ -278,6 +292,8 @@ function Inbox() {
         localStorage.setItem('Change:','false')
     }
     User=localStorage.getItem("user_id:");
+    is_premium =  localStorage.getItem("is_premium:");
+    console.log("This is the value of is premium: " + is_premium)
     console.log("This is the count" + Count)
     useEffect(() => {
         if(SearchInput.length === 0&&Checked==false){
@@ -324,8 +340,9 @@ function Inbox() {
     const getEmailbyID = event => {
         //Bug where you have to hit email two times for the right email address to appear
         console.log('Getting Email Address');
-        console.log("This is the user id:" + parseInt(readdata.user_id))
-        axios.get('http://127.0.0.1:5000/EmailService/users/'+readdata.user_id)
+        currentuserid = localStorage.getItem("currentuserid:")
+        console.log("This is the email id: " + parseInt(currentuserid))
+        axios.get('http://127.0.0.1:5000/EmailService/users/'+currentuserid)
         .then(function(response){
             const email_address_response_data = response.data
             const user_email_address = email_address_response_data.User.email_address
@@ -381,6 +398,23 @@ function Inbox() {
             console.log(error)
         })
 
+    }
+    const handleSubmitDeleteFromDatabase = event => {
+        console.log('handleSubmitDeleteFromDatabase ran');
+        event.preventDefault();
+        if(is_premium == 1){
+            axios.delete('http://127.0.0.1:5000/EmailService/email/' + readdata.email_ID)
+            .then(function(response){
+                console.log("Email Deleted FROM Database")
+            })
+            .catch(function(error){
+
+            })
+
+        }
+        else{
+            setIsNotPremium(true);
+        }
     }
     const handleSubmitDeleteOutbox = event => {
         console.log('handleSubmitDeleteOutbox ran');
@@ -478,6 +512,7 @@ function Inbox() {
     const[date_created,setDateCreated] = useState("");
     const[deleting,setDeleting] = useState("");
     const[deletingoutbox,setDeletingOutbox] = useState(false);
+    const[deletingfromdb,setDeletingFromDB] = useState(false);
     // E
     const[email_address,setEmailAddress] = useState("");
     const[email_id,setEmailId] = useState(""); 
@@ -485,6 +520,7 @@ function Inbox() {
     const[FriendEmail,setFriendEmail] = useState("");
     // M
     const [MailBox, setMailbox] = useState(0);
+    const [isnotpremium,setIsNotPremium] = useState(false);
     // O
     const [open, setOpen] = useState(false);
     // R
@@ -716,7 +752,34 @@ try{
                     <Button onClick={() => setDeletingOutbox(true) }>Delete </Button>
                     <Button onClick={() => setReplying(true)}>Reply</Button>
                 <Button onClick={() => setReadEmailOutbox(false)}>Close</Button>
+                <Button onClick={() => setDeletingFromDB(true)}>Delete from database</Button>
             </Modal>
+
+            <Modal
+            centered={true}
+            open={isnotpremium}
+            dialogClassName="modal-100w"
+            size="large"
+            >
+                <Header as="h1" color='blue'>
+                        You are not premium user, Get Premium to be able to do this... 
+                    </Header>
+                <Button onClick={() => setIsNotPremium(false)}>Close</Button>
+            </Modal>
+
+            <Modal
+            centered={true}
+            open={deletingfromdb}
+            dialogClassName="modal-100w"
+            size="large"
+            >
+                <Header as="h1" color='blue'>
+                        Deleting Email
+                    </Header>
+                <Button onClick={handleSubmitDeleteFromDatabase}>Are you sure you want to delete?</Button>
+                <Button onClick={() => (setDeletingFromDB(false),setReadEmailOutbox(false),Done = false)}>Hit here to close the window</Button>
+            </Modal>
+
             <Modal
             centered={true}
             open={deletingoutbox}
