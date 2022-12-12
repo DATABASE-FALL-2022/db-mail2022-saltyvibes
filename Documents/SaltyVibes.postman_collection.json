@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "d79922ff-3740-422b-830c-5c35475d4536",
-		"name": "SaltyVibes",
+		"_postman_id": "a32439b6-c1b0-475b-a74b-c5fdc2bdf638",
+		"name": "SaltyVibes Copy 2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24322080"
 	},
@@ -221,8 +221,55 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "getAllUsers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:5000/EmailService/users",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "5000",
+									"path": [
+										"EmailService",
+										"users"
+									]
+								}
+							},
+							"response": []
 						}
 					]
+				},
+				{
+					"name": "getUserInfoByEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/EmailService/GetUserInformationUsingEmailAddress/Ron@email.com",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"EmailService",
+								"GetUserInformationUsingEmailAddress",
+								"Ron@email.com"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -344,6 +391,29 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "getAllEmail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:5000/EmailService/email",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "5000",
+									"path": [
+										"EmailService",
+										"email"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -353,7 +423,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000//EmailService/inbox/4",
+							"raw": "http://127.0.0.1:5000/EmailService/inbox/4",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -363,7 +433,6 @@
 							],
 							"port": "5000",
 							"path": [
-								"",
 								"EmailService",
 								"inbox",
 								"4"
@@ -378,7 +447,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000//EmailService/outbox/1",
+							"raw": "http://127.0.0.1:5000/EmailService/outbox/1",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -388,7 +457,6 @@
 							],
 							"port": "5000",
 							"path": [
-								"",
 								"EmailService",
 								"outbox",
 								"1"
@@ -944,7 +1012,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n\r\n    \"owner_id\"      :  4 ,\r\n    \"friend_id\"     :  7\r\n\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -952,7 +1020,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://127.0.0.1:5000/EmailService/Friend",
+									"raw": "http://127.0.0.1:5000/EmailService/Friend/1/6",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -963,7 +1031,9 @@
 									"port": "5000",
 									"path": [
 										"EmailService",
-										"Friend"
+										"Friend",
+										"1",
+										"6"
 									]
 								}
 							},
