@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Emails from "./Emails";
 import Account from "./Account";
 import Inbox from "./Inbox";
+import ViewFriends from "./ViewFriends";
 
 var U =3
 
@@ -26,7 +27,7 @@ function UserView(){
             menuItem: 'Profile', render: () => <Tab.Pane active={isAuth}><Account/></Tab.Pane>
         },
         {
-            menuItem: 'Friend List', render: () => <Tab.Pane active={isAuth}> this is my friends list <Dashboard/></Tab.Pane>
+            menuItem: 'Friend List', render: () => <Tab.Pane active={isAuth}> <ViewFriends/></Tab.Pane>
         },
         {
             menuItem: 'Dashboard', render: () => <Tab.Pane active={isAuth}><Dashboard /></Tab.Pane>

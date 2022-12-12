@@ -233,6 +233,30 @@ class UserHandler:
                 result_list.append(result)
             return jsonify(Friend=result_list)
 
+    def getAllFriends(self,User_id):
+        dao = UserDAO()
+        if not dao.getUserbyId(User_id):
+            return jsonify(Error="Malformed update request"), 400
+        else:
+            Friends = dao.getAllFriends(User_id)
+        if not Friends:
+            return jsonify(Error="Friend Not Found"), 404
+        else:
+            result_list = []
+            print(Friends)
+            for row in Friends:
+                result = self.build_user_dict(row)
+                result_list.append(result)
+            return jsonify(Friend=result_list)
+
+
+
+
+
+
+
+
+
     def getSpecificFriend(self, owner_id,friend_id):
             dao = UserDAO()
             if not(owner_id or friend_id):

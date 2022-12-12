@@ -184,6 +184,11 @@ def getSpecificFriend(owner_id,friend_id):
         return UserHandler().getSpecificFriend(owner_id,friend_id)
 
 
+@app.route('/EmailService/Friend/<int:owner_id>')
+def getAllFriends(owner_id):
+        return UserHandler().getAllFriends(owner_id)
+
+
 
 if __name__ == '__main__':
     app.run()
