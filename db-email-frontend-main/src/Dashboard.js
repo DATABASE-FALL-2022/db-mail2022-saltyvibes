@@ -6,12 +6,14 @@ import Axios, {post} from 'axios'
 import axios from 'axios'
 
 
-var User =3
+var User
 
 
 function getUserStatistics(setUserStatistics,setUserMostRecipients,setUserMostReplies,settop5UserInbox,settop5UserOutbox){
     setUserStatistics(0)
     console.log('Getting User Statistics');
+    User=localStorage.getItem("user_id:")
+    console.log(User)
     axios.get('http://127.0.0.1:5000/EmailService/EmailWithMostRecipientsbyUser/'+User)
         .then(function(response){
             const response_data = response.data

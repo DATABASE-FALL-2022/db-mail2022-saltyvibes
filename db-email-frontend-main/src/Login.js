@@ -14,9 +14,28 @@ function AttemptAccess(Email,Password,setPressed,ChangeView){
     then(function(response) {
         const response_data = response.data
         const AccountPassword = response_data.User.password
+        console.log(AccountPassword)
+        console.log(Password)
         if(AccountPassword==Password){
             console.log("Log in succesful")
+            const User =[]
+            // User.push("user_id:"+response_data.User.user_id)
+            // User.push("name:"+response_data.User.name)
+            // User.push("email_address:"+response_data.User.email_address)
+            // User.push("password:"+response_data.User.password)
+            // User.push("is_premium:"+response_data.User.is_premium)
+            // User.push("phone:"+response_data.User.phone)
+            // User.push("date_of_birth:"+response_data.User.date_of_birth)
+            localStorage.setItem("user_id:",response_data.User.user_id)
+            localStorage.setItem("name:",response_data.User.name)
+            localStorage.setItem("email_address:",response_data.User.email_address)
+            localStorage.setItem("password:",response_data.User.password)
+            localStorage.setItem("is_premium:",response_data.User.is_premium)
+            localStorage.setItem("phone:",response_data.User.phone)
+            localStorage.setItem("date_of_birth:",response_data.User.date_of_birth)
 
+            console.log(localStorage.getItem("user_id:"))
+            console.log("-------------------------------------")
             ChangeView('/UserView')
         }
         else{
@@ -32,8 +51,8 @@ function AttemptAccess(Email,Password,setPressed,ChangeView){
 
 function Login() {
     const [Pressed, setPressed] = useState(false);
-    const [Email, setEmail] = useState(false);
-    const [Password, setPassword] = useState(false);
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
     const ChangeView = useNavigate()
     const HandleEvent = (event, newValue) => {
         setPressed(true);
