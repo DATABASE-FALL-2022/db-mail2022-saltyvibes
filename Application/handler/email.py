@@ -221,6 +221,7 @@ class EmailHandler:
 
     def CreateReply(self, form):
         print(len(form))
+        print(form)
         if len(form) != 5:
             return jsonify(Error="Malformed post request"), 400
         else:

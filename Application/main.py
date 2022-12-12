@@ -116,9 +116,8 @@ def getAllUsers():
         return UserHandler().getAllUsers()
 @app.route('/EmailService/users/<int:user_id>', methods=['GET','PUT',"DELETE"])
 def getUserByID(user_id):
-
+    print(user_id)
     if request.method == "GET":
-        print(user_id)
         return UserHandler().getUserbyId(user_id)
     elif request.method == "PUT":
         return UserHandler().updateUser(user_id,request.json)
