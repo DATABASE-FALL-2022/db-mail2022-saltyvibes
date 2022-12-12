@@ -81,8 +81,8 @@ class UserDAO:
 
     def getAllFriends(self,owner_id):
         cursor = self.conn.cursor()
-        query = 'with arefriends as ( select friend_id from "Friends" where owner_id = %s UNION SELECT owner_id as friend_id from "Friends" where friend_id = %s ) select user_id, "name", email_address, "password", is_premium, phone, date_of_birth from "User" as U, arefriends as F where u.user_id = F.friend_id ;'
-        cursor.execute(query,(owner_id,owner_id,))
+        query = 'with arefriends as ( select friend_id from "Friends" where owner_id = %s ) select user_id, "name", email_address, "password", is_premium, phone, date_of_birth from "User" as U, arefriends as F where u.user_id = F.friend_id ;'
+        cursor.execute(query,(owner_id,))
         result = []
         for row in cursor:
             result.append(row)

@@ -273,12 +273,8 @@ class UserHandler:
                     result_list.append(result)
                 return jsonify(Friend=result_list)
 
-    def removeFriend(self, form):
+    def removeFriend(self, owner_id,friend_id):
         dao = UserDAO()
-        if len(form) != 2:
-            return jsonify(Error="Malformed update request"), 400
-        owner_id = form["owner_id"]
-        friend_id = form["friend_id"]
         if owner_id and friend_id:
                 if not dao.getFriend(owner_id, friend_id):
                     return jsonify(Error = "Friendship not found."), 404
@@ -286,10 +282,9 @@ class UserHandler:
                     Friend =dao.removeFriend(owner_id, friend_id)
                     print(Friend)
                     result = self.build_friend_attributes(Friend)
-                    return jsonify(DeletedFriend=result), 200
-
+                    return jsonify(Friend=result), 200
         else:
-            return jsonify(Error="Unexpected attributes in update request"),400
+            return jsonify(Error="Unexpected attributes in delete request"),400
 
     def updatePassword(self, user_id, form):
         dao = UserDAO()
