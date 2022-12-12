@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {Button, Card, Container, Divider, Header, Icon, Image, Modal, Tab} from "semantic-ui-react";
 import Dashboard from "./Dashboard";
 import Emails from "./Emails";
@@ -13,7 +13,14 @@ function UserView(){
     console.log(open);
 
     const [isAuth, setIsAuth] = useState(true)
-    const [notShow, setNotShow] = useState(false)
+    const [UpdateTab, setUpdateTab] = useState(false)
+
+
+    const UpdateData = () => {
+        localStorage.setItem('Change:','true')
+        console.log('I entered here')
+
+    }
 
     const panes = [
         {
@@ -27,14 +34,14 @@ function UserView(){
             menuItem: 'Profile', render: () => <Tab.Pane active={isAuth}><Account/></Tab.Pane>
         },
         {
-            menuItem: 'Friend List', render: () => <Tab.Pane active={isAuth}> <ViewFriends/></Tab.Pane>
+            menuItem: 'Friend List', render: () => <Tab.Pane  active={setIsAuth(true)}> <ViewFriends/></Tab.Pane>
         },
         {
             menuItem: 'Dashboard', render: () => <Tab.Pane active={isAuth}><Dashboard /></Tab.Pane>
         }
     ]
 
-    return <Tab panes={panes}/>
+    return <Tab onTabChange={UpdateData} panes={panes}/>
 
 }
 export default UserView;

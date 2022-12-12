@@ -7,9 +7,11 @@ var Count= 0
 //used for account and account change
 
 var User
+var Done=false
 
 function getUserData(setStart,setEmail, setPassword,setName,setPhone, setDate_Of_Birth, setPremiumUser){
     setStart(false)
+    Done=true
     console.log('Getting User Data');
     User=localStorage.getItem("user_id:")
     console.log("This is the user id:" + parseInt(User))
@@ -57,36 +59,34 @@ function changeUserData(setChange, Email, Password, Name, Phone, Date_Of_Birth, 
 }
 
 function Account(user){
-    console.log("Hello from the other side")
-    if(typeof user!=='undefined'){
-        console.log("It is undefined")
-
+    if('true'==localStorage.getItem('Change:')){
+        Done = false
+        localStorage.setItem('Change:','false')
     }
+
+
     useEffect(()=>
-    {if(Start==true)
+    {console.log("entered use effect")
+        if(Done==false)
     {return getUserData(setStart,setEmail, setPassword,setName,setPhone, setDate_Of_Birth, setPremiumUser)}
         else if(Change==true){
         console.log('I am here')
             return changeUserData(setChange,Email, Password,Name,Phone, Date_Of_Birth, PremiumUser)
 
     }
-
-        else if(Email!=''&& Password!=''&&Name!=''&&Phone!=''&& Date_Of_Birth!=''&& PremiumUser!=''){
-        return getUserData(setStart,setEmail, setPassword,setName,setPhone, setDate_Of_Birth, setPremiumUser)
-    }
-        else
-            {console.log('do nothing')
-
-        }
     }
         )
+    // const getUserInfo= (event, newValue) => {
+    //
+    //
+    // }
     const handleChange = (event, newValue) => {
         Count=1
-        setOpen(true);
-        setStart(1)
+        setOpen(true)
+
     }
     const [Start,setStart] = useState(0);
-    const [Change,setChange] = useState(0);
+    const [Change,setChange] = useState(false);
     const [open, setOpen] = useState(false);
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
@@ -96,8 +96,7 @@ function Account(user){
     const [PremiumUser, setPremiumUser] = useState("");
     console.log(open);
     console.log("Hello from the other side")
-    if(Count ==0)
-        handleChange()
+
 
 
 
@@ -150,62 +149,67 @@ function Account(user){
                 <Form>
                     <Form.Input
                         fluid
-                        icon='Name'
+
                         iconPosition='left'
                         label = 'Name'
                         labelPosition='left'
                         id='Name'
+                        maxLength="20"
                         onChange={event=>setName(event.target.value)}
                     />
                     <Form.Input
                         fluid
-                        icon='lock'
+
                         iconPosition='left'
                         label = 'email_address'
                         labelPosition='left'
                         type='email_address'
                         id='email_address'
+                        maxLength="20"
                         onChange={event=>setEmail(event.target.value)}
                     />
                     <Form.Input
                         fluid
-                        icon='Name'
+                        icon='lock'
                         iconPosition='left'
                         label = 'New Password'
                         labelPosition='left'
                         id='New Password'
+                        maxLength="20"
                         onChange={event=>setPassword(event.target.value)}
                     />
                     <Form.Input
                         fluid
-                        icon='lock'
+
                         iconPosition='left'
                         label = 'Phone'
                         labelPosition='left'
                         type='Phone'
                         id='Phone'
+                        maxLength="10"
                         onChange={event=>setPhone(event.target.value)}
                     />
+                    <label htmlFor="date">new date of birth:</label>
+                    <br></br>
+                    <input
+                        type="date"
+                        id="date_created"
+                        name="new date of birth"
+                        onChange={event => setDate_Of_Birth(event.target.value)}
+
+                    ></input>
                     <Form.Input
                         fluid
-                        icon='Name'
-                        iconPosition='left'
-                        label = 'New Date of Birth'
-                        labelPosition='left'
-                        id='New Date of Birth'
-                        onChange={event=>setDate_Of_Birth(event.target.value)}
-                    />
-                    <Form.Input
-                        fluid
-                        icon='lock'
+
                         iconPosition='left'
                         label = 'Premium User'
                         labelPosition='left'
                         type='Premium User'
                         id='Premium User'
+                        maxLength="1"
                         onChange={event=>setPremiumUser(event.target.value)}
                     />
-                    <Button type='submit'onClick={() => setChange(true)}>Save</Button>
+                    <Button type='submit'onClick={() => (setChange(true),setOpen(false))}>Save</Button>
                     <Button onClick={() => setOpen(false)}>Back</Button>
 
                 </Form>
