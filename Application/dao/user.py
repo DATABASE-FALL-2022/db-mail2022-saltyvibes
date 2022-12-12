@@ -79,6 +79,15 @@ class UserDAO:
             result.append(row)
         return result
 
+    def getAllFriends(self,owner_id):
+        cursor = self.conn.cursor()
+        query = 'with arefriends as ( select friend_id from "Friends" where owner_id = %s UNION SELECT owner_id as friend_id from "Friends" where friend_id = %s ) select user_id, "name", email_address, "password", is_premium, phone, date_of_birth from "User" as U, arefriends as F where u.user_id = F.friend_id ;'
+        cursor.execute(query,(owner_id,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     def getTop10UsersOutbox(self):
         cursor = self.conn.cursor()
         query = "with Top10Users as ( select user_id, count(user_id) as count from \"Email\" group by user_id order by count(user_id) desc limit 10 ) SELECT user_id, name, email_address, password, is_premium, phone, date_of_birth from \"User\" natural inner join Top10Users order by count desc, name desc;"

@@ -18,14 +18,6 @@ function AttemptAccess(Email,Password,setPressed,ChangeView){
         console.log(Password)
         if(AccountPassword==Password){
             console.log("Log in succesful")
-            const User =[]
-            // User.push("user_id:"+response_data.User.user_id)
-            // User.push("name:"+response_data.User.name)
-            // User.push("email_address:"+response_data.User.email_address)
-            // User.push("password:"+response_data.User.password)
-            // User.push("is_premium:"+response_data.User.is_premium)
-            // User.push("phone:"+response_data.User.phone)
-            // User.push("date_of_birth:"+response_data.User.date_of_birth)
             localStorage.setItem("user_id:",response_data.User.user_id)
             localStorage.setItem("name:",response_data.User.name)
             localStorage.setItem("email_address:",response_data.User.email_address)
