@@ -138,7 +138,10 @@ class EmailHandler:
         result["user_id"] = user_id
         result["original_id"] = original_id
         return result
-
+    def build_to_emails_dict(self,row):
+        result = {}
+        result["email_address"] = row[0]
+        return result
     def getAllEmails(self):
         dao = EmailDAO()
         user_list = dao.getAllEmails()
@@ -147,7 +150,14 @@ class EmailHandler:
             result = self.build_email_dict(row)
             result_list.append(result)
         return jsonify(Email=result_list)
-
+    def getEmailsTobyId(self,email_id):
+        dao = EmailDAO()
+        emails_to = dao.getEmailsTobyID(email_id)
+        result_list = []
+        for row in emails_to:
+            result = self.build_to_emails_dict(row)
+            result_list.append(result)
+        return jsonify(Email=result_list)
     def updateEmail(self, email_id, form):
         dao = EmailDAO()
         if not dao.getEmailbyId(email_id):
