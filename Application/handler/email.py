@@ -36,7 +36,11 @@ class EmailHandler:
         result['is_deleted'] = is_deleted
         result['category'] = category
         return result
-
+    def build_all_replies(self,row):
+        result = {}
+        result["original_id"] = row[0]
+        result["reply_id"] = row[1]
+        return result
     def build_inbox_dict(self, row):
         result = {}
         print(row)
@@ -439,6 +443,17 @@ class EmailHandler:
 
         else:
                 return jsonify(Error="Unexpected attributes in update request"),400
+
+
+    def getAllReplies(self):
+        dao = EmailDAO()
+        user_list = dao.getAllReplies()
+        result_list = []
+        for row in user_list:
+            result = self.build_all_replies(row)
+            result_list.append(result)
+        return jsonify(Email=result_list)
+
 
     def getReceives(self,form):
         dao = EmailDAO()

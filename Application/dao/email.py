@@ -209,6 +209,14 @@ class EmailDAO:
         self.conn.commit()
         return cursor.fetchone()
 
+    def getAllReplies(self):
+        cursor = self.conn.cursor()
+        query = 'Select * from reply'
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
     def getReceive(self, user_id,email_id):
         cursor = self.conn.cursor()
         query = 'SELECT user_id, email_id, is_viewed, is_deleted,category FROM receives WHERE user_id=%s and email_id = %s'
