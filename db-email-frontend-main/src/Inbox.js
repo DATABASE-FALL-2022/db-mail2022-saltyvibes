@@ -4,7 +4,7 @@ import {Label} from "recharts";
 import axios from "axios";
 
 
-var User = 3;
+var User;
 var Count = 0;
 var Checked = true; 
 
@@ -270,6 +270,7 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
 
 
 function Inbox() {
+    User=localStorage.getItem("user_id:");
     console.log("This is the count" + Count)
     useEffect(() => {
         if(SearchInput.length === 0&&Checked==false){

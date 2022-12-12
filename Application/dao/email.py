@@ -205,10 +205,25 @@ class EmailDAO:
     def updateReceive(self, user_id, email_id, new_user_id, new_email_id,is_viewed,is_deleted,category):
         cursor = self.conn.cursor()
         query = 'UPDATE receives SET user_id = %s, email_id = %s, is_viewed = %s, is_deleted = %s, category = %s WHERE user_id = %s and email_id = %s returning user_id'
-        cursor.execute(query, (new_user_id, new_email_id,is_viewed,is_deleted,category, user_id, email_id))
+        cursor.execute(query, (new_user_id, new_email_id,is_viewed,is_deleted,category, user_id, email_id,))
         self.conn.commit()
         return cursor.fetchone()
-
+    def getReceiveByID(self,user_id,email_id):
+        cursor = self.conn.cursor()
+        query = 'SELECT * FROM receives where email_id = %s and user_id = %s'
+        cursor.execute(query,(email_id,user_id))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+    def getAllReplies(self):
+        cursor = self.conn.cursor()
+        query = 'Select * from reply'
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
     def getReceive(self, user_id,email_id):
         cursor = self.conn.cursor()
         query = 'SELECT user_id, email_id, is_viewed, is_deleted,category FROM receives WHERE user_id=%s and email_id = %s'
