@@ -285,6 +285,148 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
 }
 
 
+function searchOutboxByCategory(handlingreadingemailoutbox, SearchInput, setSearchInput, setButtons, setReadData) {
+    console.log("I have begun a search in Outbox");
+    console.log("Search Input: " +SearchInput);
+    Checked = true;
+    setSearchInput("");
+    console.log("Search Input: " +SearchInput);
+    SearchInput.substring(9,SearchInput.length)
+    axios.get("http://127.0.0.1:5000/EmailService/outbox/"+User.toString()+"/Category/"+SearchInput)
+        .then(response => {
+            const data = response.data;
+            const buttonData = data.Outbox.map(item => {
+                if(item.is_friend&&item.user_id !=0){
+                    if(item.is_reply)
+                        return <Button color='teal' onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}    </Button>
+                    else
+                        return <Button color='teal' onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} </Button>
+                }else if (item.user_id ==0){
+                    if (item.is_reply)
+                        return <Button color='orange' onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject}  <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='orange' onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                }
+                else{
+                    if(item.is_reply)
+                        return <Button color='google plus'  onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject} <Icon name ='reply' color='black' /> <br/>Date: {item.date_created} </Button>
+                    else
+                        return <Button color='google plus'  onClick={function(event)
+                        {
+                            handlingreadingemailoutbox();
+                            setReadData(item);
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+            });
+            setButtons(buttonData);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
+
+function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput, setButtons, setUserId, setReadData, setEmailId, getEmailbyID) {
+    console.log("I have begun a search in Inbox");
+    console.log("Search Input: " +SearchInput);
+    Checked = true;
+    setSearchInput("");
+    console.log("Search Input: " +SearchInput);
+    const str = SearchInput.substring(9,SearchInput.length)
+    axios.get("http://127.0.0.1:5000/EmailService/inbox/"+User.toString()+"/filter/"+str)
+        .then(response => {
+            const data = response.data;
+            const buttonData = data.Inbox.map(item => {
+                if(item.is_friend&&item.user_id !=0){
+                    if(item.is_friend)
+                        return <Button color='teal' onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='teal' onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                }else if (item.user_id ==0){
+                    if (item.is_friend)
+                        return <Button color='orange' onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='orange' onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                }
+                else{
+                    if(item.is_friend)
+                        return <Button color='google plus' onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                    else
+                        return <Button color='google plus'  onClick={function(event)
+                        {
+                            handlingreadingemail();
+                            setUserId(item.user_id);
+                            setReadData(item);
+                            setEmailId(item.email_ID)
+                            localStorage.setItem("currentuserid:", item.user_id)
+                            getEmailbyID();
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+            });
+            setButtons(buttonData);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
+
 function Inbox() {
 
     if('true'==localStorage.getItem('Change:')){
@@ -306,6 +448,10 @@ function Inbox() {
         else if(MailBox==0&&Done==false){
             return LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress)
             }
+        else if(MailBox==0&&SearchInput.includes('Category:')){
+            console.log('it has category')
+            return searcInboxByCategory(handlingreadingemail,SearchInput,setSearchInput,setButtons,setUserId,setReadData,setEmailId,getEmailbyID)
+        }
         else if(MailBox==0&&SearchInput!=""){
             return searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInput,setButtons,setUserId,setReadData,setEmailId,getEmailbyID)
          }
@@ -313,6 +459,7 @@ function Inbox() {
             return searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSearchInput,setButtons,setReadData)
 
         }
+
 
 
     });
