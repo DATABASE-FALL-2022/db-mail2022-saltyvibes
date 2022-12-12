@@ -7,10 +7,11 @@ import axios from "axios";
 var User;
 var Count = 0;
 var Checked = true; 
-
+var Done = false; 
 function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
     console.log("I have entered the Outbox");
     Count=1;
+    Done = true;
     axios.get("http://127.0.0.1:5000/EmailService/outbox/"+User.toString())
         .then(response => {
             const data = response.data;
@@ -52,6 +53,7 @@ function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
 function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress){
     console.log("I have entered the Inbox");
     console.log("Count: " +Count.toString());
+    Done = true;
     axios.get("http://127.0.0.1:5000/EmailService/inbox/"+User.toString())
         .then(response => {
             const data = response.data;
@@ -270,6 +272,11 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
 
 
 function Inbox() {
+
+    if('true'==localStorage.getItem('Change:')){
+        Done = false
+        localStorage.setItem('Change:','false')
+    }
     User=localStorage.getItem("user_id:");
     console.log("This is the count" + Count)
     useEffect(() => {
@@ -277,10 +284,10 @@ function Inbox() {
             Count = 0
             Checked=true
         }
-        else if(MailBox==1&&Count==0){
+        else if(MailBox==1&&Done==false){
             return LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData)
         }
-        else if(MailBox==0&&Count==0){
+        else if(MailBox==0&&Done==false){
             return LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress)
             }
         else if(MailBox==0&&SearchInput!=""){
@@ -443,53 +450,8 @@ function Inbox() {
 
       };
 
-    const createFriend = event => {
-        {
-            event.preventDefault(); // 👈️ prevent page refresh
-            console.log('Entered method createFriend:');
-            console.log('Getting user id from email address: '+ FriendEmail);
+    
 
-            axios.get('http://127.0.0.1:5000/EmailService/GetUserInformationUsingEmailAddress/'+FriendEmail).
-            then(function(response) {
-                const email_address_response_data = response.data
-                const Friend_id = email_address_response_data.Get_User_Information_Using_Email_Address.user_id
-                axios.get('http://127.0.0.1:5000/EmailService/Friend/'+User+'/'+Friend_id)
-                    .then(function(response){
-                        console.log("Friend does exist")
-                    })
-                    .catch(function(error){//!Be careful, this can catch a false positive
-                        console.log("Friend does not exist, we can add a friend")
-                        console.log('Adding Friend');
-                        console.log("This is the user id:  " + User)
-                        console.log("This is the friend id:" + parseInt(Friend_id))
-                        axios.post('http://127.0.0.1:5000/EmailService/Friend',{
-                            owner_id:User,
-                            friend_id:Friend_id
-                        })
-                            .then(function(response){
-                                const friend_response_data = response.data
-
-                                const user_email_address = friend_response_data.Friend.owner_id
-                                console.log("Created new Friend ")
-                                setEmailAddress(user_email_address)
-                            })
-                            .catch(function(error){
-                                console.log("Error while creating friend")
-                                //console.log(error)
-                            });
-                    });
-                })
-                .catch(function(error){
-                    console.log("User not Found")
-                    //console.log(error)
-                });
-
-
-        }
-
-    }
-    // A
-    const [AddFriend, setAddFriend] = useState(false);
     // B
     const[body,setBody] = useState("");
     const [buttons, setButtons] = useState([]);
@@ -532,29 +494,6 @@ function Inbox() {
 
 try{
     return (<Segment>
-            <Modal
-                centered={true}
-                open={AddFriend}
-                dialogClassName="modal-100w"
-                size="large"
-            >
-                <Modal.Header>Adding Friend:</Modal.Header>
-                <form onSubmit={createFriend}>
-                    <label for="email_address">Friend Email:</label>
-                    <br></br>
-                    <input
-                        type="text"
-                        id="email_address"
-                        name="email_address"
-                        onChange={event => setFriendEmail(event.target.value)}
-                        value= {FriendEmail}
-                    ></input>
-                    <br></br>
-                    <input type ="submit"></input>
-                </form>
-
-                <Button onClick={() => setAddFriend(false)}>Close</Button>
-            </Modal>
 
 
 
@@ -774,10 +713,9 @@ try{
                         placeholder='Search with email address'
                         onChange={SearchChange}
                     />
-                    <Button onClick={() => (Count = 0,setMailbox(0))}>Inbox</Button>
-                    <Button onClick={() => (Count = 0,setMailbox(1))}>Outbox</Button>
+                    <Button onClick={() => (Done=false,setMailbox(0))}>Inbox</Button>
+                    <Button onClick={() => (Done=false,setMailbox(1))}>Outbox</Button>
                     <Button onClick={handlingcreatechange}>Create Email</Button>
-                    <Button onClick={() =>setAddFriend(true)}>AddFriend</Button>
                 </Grid.Column>
 
             </Grid>

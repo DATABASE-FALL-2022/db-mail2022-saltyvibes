@@ -24,11 +24,8 @@ function UserView(){
 
     const panes = [
         {
-            menuItem: 'Inbox', render: () => <Tab.Pane active={isAuth}><Inbox/></Tab.Pane>
+            menuItem: 'Inbox/Outbox', render: () => <Tab.Pane active={isAuth}><Inbox/></Tab.Pane>
 
-        },
-        {
-            menuItem: 'Outbox', render: () => <Tab.Pane active={isAuth}><Container><Header>Anything you need to put here</Header><Divider/></Container><Emails/></Tab.Pane>
         },
         {
             menuItem: 'Profile', render: () => <Tab.Pane active={isAuth}><Account/></Tab.Pane>
