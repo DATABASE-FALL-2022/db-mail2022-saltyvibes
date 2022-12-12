@@ -10,7 +10,8 @@ var Checked = true;
 var Done = false; 
 var is_premium;
 var currentuserid; 
-function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
+var currentemailid;
+function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData,getEmailTobyID){
     console.log("I have entered the Outbox");
     Count=1;
     Done = true;
@@ -24,12 +25,16 @@ function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID)
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
                     else
                         return <Button color='teal' onClick={function(event)
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID)
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }else{
                     if (item.is_reply)
@@ -37,12 +42,16 @@ function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData){
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID)
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} </Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID)
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
@@ -225,7 +234,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
 
 }
 
-function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSearchInput,setButtons,setReadData){
+function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSearchInput,setButtons,setReadData,getEmailTobyID){
     console.log("I have begun a search in Outbox");
     console.log("Search Input: " +SearchInput);
     Checked = true;
@@ -241,12 +250,16 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created}    </Button>
                     else
                         return <Button color='teal' onClick={function(event)
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} </Button>
                 }else if (item.user_id ==0){
                     if (item.is_reply)
@@ -254,12 +267,16 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject}  <Icon name ='reply' color='black' /><br/>Date: {item.date_created}</Button>
                     else
                         return <Button color='orange' onClick={function(event)
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
                 }
                 else{
@@ -268,12 +285,16 @@ function searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSe
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /> <br/>Date: {item.date_created} </Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
                             {
                             handlingreadingemailoutbox();
                             setReadData(item);
+                            localStorage.setItem("currentemailid:", item.email_ID);
+                            getEmailTobyID();
                         }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
             });
             setButtons(buttonData);
@@ -443,7 +464,7 @@ function Inbox() {
             Checked=true
         }
         else if(MailBox==1&&Done==false){
-            return LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData)
+            return LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData,getEmailTobyID)
         }
         else if(MailBox==0&&Done==false){
             return LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress)
@@ -456,7 +477,7 @@ function Inbox() {
             return searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInput,setButtons,setUserId,setReadData,setEmailId,getEmailbyID)
          }
         else if(MailBox==1&&SearchInput!=""){
-            return searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSearchInput,setButtons,setReadData)
+            return searchOutboxByEmailAddress(handlingreadingemailoutbox,SearchInput,setSearchInput,setButtons,setReadData,getEmailTobyID)
 
         }
 
@@ -496,6 +517,20 @@ function Inbox() {
             console.log( "this is the email address: " + user_email_address)
             setEmailAddress(user_email_address)
             setUserId("")
+        })
+        .catch(function(error){
+        });
+    };
+    const getEmailTobyID = event => {
+        //Bug where you have to hit email two times for the right email address to appear
+        console.log('Getting Emails Address Of People you Sent to');
+        currentemailid = localStorage.getItem("currentemailid:")
+        console.log("This is the email id: " + parseInt(currentemailid))
+        axios.get('http://127.0.0.1:5000/EmailService/emailsto/'+currentemailid)
+        .then(function(response){
+            const data = response.data
+            const email_address_data = data.Email.map(item => {return item.email_address})
+            setHolderOfEmailAddresses(email_address_data)
         })
         .catch(function(error){
         });
@@ -663,6 +698,8 @@ function Inbox() {
     // E
     const[email_address,setEmailAddress] = useState("");
     const[email_id,setEmailId] = useState(""); 
+    //H
+    const[holder_of_emailaddresses,setHolderOfEmailAddresses] = useState([])
     // F
     const[FriendEmail,setFriendEmail] = useState("");
     // M
@@ -889,6 +926,10 @@ try{
                     <Header as="h1"
                     >
                         Date: {JSON.stringify(readdata.date_created)}
+                    </Header>
+                    <Header as="h1"
+                    >
+                        To: {JSON.stringify(holder_of_emailaddresses)}
                     </Header>
                     <Header as="h1">
                         Body:

@@ -35,7 +35,12 @@ def getEmailbyId(email_id):
         return EmailHandler().deleteEmail(email_id)
     else:
         return jsonify(Error = "Method not allowed"), 405
-
+@app.route('/EmailService/emailsto/<int:email_id>', methods= ['GET'])
+def getEmailsTo(email_id):
+    if request.method == "GET":
+        return EmailHandler().getEmailsTobyId(email_id)
+    else:
+        return jsonify(Error = "Method not allowed"), 405
 @app.route('/EmailService/User/fillwithdummy')
 def FillWithDummyData():
     return DebugHandler().fill()

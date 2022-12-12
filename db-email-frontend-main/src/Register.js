@@ -104,13 +104,14 @@ function Register() {
                     onChange={event => setPhone(event.target.value)}
                     value= {Phone}
                 />
-                    <input
+                    <Form.Input
+                        label='Date of Birth'
                         type="date"
                         id="date_created"
                         name="date_created"
                         onChange={event => setDateCreated(event.target.value)}
                         value= {date_created}
-                    ></input>
+                    ></Form.Input>
                 <Button color='purple' fluid size='large' onClick={()=>setPressed(true)}>
                     Register
                 </Button>
