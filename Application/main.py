@@ -81,7 +81,7 @@ def getEmailFromUser(email_id,user_id):
 def getEmailWithMostRecipients():
     return EmailHandler().getEmailWithMostRecipients()
 
-@app.route('/EmailService/ReadEmailFromUser')
+@app.route('/EmailService/ReadEmailFromUser',methods = ['POST'])
 def ReadEmailFromUser():
     return EmailHandler().ReadEmailFromUser(request.json)
 

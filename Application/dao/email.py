@@ -220,9 +220,7 @@ class EmailDAO:
         cursor = self.conn.cursor()
         query = 'SELECT * FROM receives where email_id = %s and user_id = %s'
         cursor.execute(query,(email_id,user_id))
-        result = []
-        for row in cursor:
-            result.append(row)
+        result = cursor.fetchone()
         return result
     def getAllReplies(self):
         cursor = self.conn.cursor()

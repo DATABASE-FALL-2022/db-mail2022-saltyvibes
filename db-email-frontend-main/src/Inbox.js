@@ -11,6 +11,7 @@ var Done = false;
 var is_premium;
 var currentuserid; 
 var currentemailid;
+var SupportIsViewed; 
 function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData,getEmailTobyID){
     console.log("I have entered the Outbox");
     Count=1;
@@ -61,7 +62,7 @@ function LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData,getEmailTo
         });
 }
 
-function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress){
+function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress,sendingSupport,settingUpSupportEmail){
     console.log("I have entered the Inbox");
     console.log("Count: " +Count.toString());
     Done = true;
@@ -80,7 +81,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }
                         }
                           >Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
@@ -93,7 +101,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }else if (item.user_id ==0){
                     if (item.is_reply)
@@ -105,7 +120,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='orange' onClick={function(event)
@@ -116,7 +138,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setUserId(item.user_id);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }
                 else{
@@ -129,7 +158,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }}>Subject: {item.subject} <Icon name ='reply' color='black' /><br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
@@ -140,7 +176,14 @@ function LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setBu
                             setReadData(item);
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
+                            localStorage.setItem("currentemailid:", item.email_ID)
                             getEmailbyID();
+                            settingUpSupportEmail()
+                            SupportIsViewed = localStorage.getItem("iscurrentlyviewed:")
+                            console.log("Is support viewed?" + SupportIsViewed)
+                            if(SupportIsViewed == 0){
+                                sendingSupport()
+                            }
                         }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>}
             });
             setButtons(buttonData);
@@ -171,7 +214,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='teal' onClick={function(event)
                             {
@@ -181,7 +224,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }else if (item.user_id ==0){
                     if (item.is_friend)
                         return <Button color='orange' onClick={function(event)
@@ -192,7 +235,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='orange' onClick={function(event)
                             {
@@ -202,7 +245,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }
                 else{
                     if(item.is_friend)
@@ -214,7 +257,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
                             {
@@ -224,7 +267,7 @@ function searchInboxByEmailAddress(handlingreadingemail,SearchInput,setSearchInp
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>}
             });
             setButtons(buttonData);
         })
@@ -386,7 +429,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='teal' onClick={function(event)
                         {
@@ -396,7 +439,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }else if (item.user_id ==0){
                     if (item.is_friend)
                         return <Button color='orange' onClick={function(event)
@@ -407,7 +450,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='orange' onClick={function(event)
                         {
@@ -417,7 +460,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                 }
                 else{
                     if(item.is_friend)
@@ -429,7 +472,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created}</Button>
+                        }}>Subject: {item.subject}<Icon name ='reply' color='black' /> <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>
                     else
                         return <Button color='google plus'  onClick={function(event)
                         {
@@ -439,7 +482,7 @@ function searcInboxByCategory(handlingreadingemail, SearchInput, setSearchInput,
                             setEmailId(item.email_ID)
                             localStorage.setItem("currentuserid:", item.user_id)
                             getEmailbyID();
-                        }}>Subject: {item.subject} <br/>Date: {item.date_created}</Button>}
+                        }}>Subject: {item.subject} <br/>Date: {item.date_created} <br></br> Category: {item.category}</Button>}
             });
             setButtons(buttonData);
         })
@@ -467,7 +510,7 @@ function Inbox() {
             return LoadOutbox(handlingreadingemailoutbox,setButtons,setReadData,getEmailTobyID)
         }
         else if(MailBox==0&&Done==false){
-            return LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress)
+            return LoadInbox(handlingreadingemail,setReadData,setUserId,getEmailbyID,setButtons,setEmailId,setEmailAddress,sendingSupport,settingUpSupportEmail)
             }
         else if(MailBox==0&&SearchInput.includes('Category:')){
             console.log('it has category')
@@ -484,6 +527,20 @@ function Inbox() {
 
 
     });
+    const settingUpSupportEmail = event => {
+        var current_user_id = localStorage.getItem("user_id:")
+        var current_email_id = localStorage.getItem("currentemailid:")
+        console.log("Entering My Supp Era")
+        axios.get('http://127.0.0.1:5000/EmailService/receive/'+current_user_id+"/"+current_email_id)
+        .then(function(response){
+            const data = response.data;
+            const viewing = data.Email.is_viewed
+            console.log(data.Email)
+            localStorage.setItem("iscurrentlyviewed:",viewing)
+        }).catch(function(error){
+            console.log("Why")
+        })
+    }
     const handleChange = (event, newValue) => {
         setOpen(true);
     }
@@ -535,6 +592,21 @@ function Inbox() {
         .catch(function(error){
         });
     };
+    const sendingSupport = event =>{
+        var user_id = localStorage.getItem("user_id:");
+        var email_id = localStorage.getItem("currentemailid:")
+        console.log("Being the best supp")
+        console.log(user_id)
+        console.log(email_id)
+        axios.post('http://127.0.0.1:5000/EmailService/ReadEmailFromUser',{
+            user_id: user_id,
+            email_id: email_id
+        }).then(function(response){
+            console.log("Finished sending support email")
+        }).catch(function(error){
+            console.log(error)
+        })
+    }
     const handleSubmitReply = event => {
         console.log('handleSubmitreply ran');
         event.preventDefault(); // 👈️ prevent page refresh

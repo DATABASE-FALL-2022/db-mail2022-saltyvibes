@@ -456,12 +456,12 @@ class EmailHandler:
 
     def getReceivebyID(self,user_id,email_id):
         dao = EmailDAO()
-        email_from_user = dao.getReceiveByID(user_id,email_id)
-        result_list = []
-        for row in email_from_user:
-            result = self.build_receives_dict(row)
-            result_list.append(result)
-        return jsonify(Email=result_list)
+        if user_id and email_id:
+            email_from_user = dao.getReceive(user_id,email_id)
+            result = self.build_receives_dict(email_from_user)
+            return jsonify(Email=result)
+        else:
+            return jsonify(Error="Unexpected attributes in update request"), 400
     def getAllReplies(self):
         dao = EmailDAO()
         user_list = dao.getAllReplies()
